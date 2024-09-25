@@ -13,13 +13,12 @@ class AuthController extends Controller
     public function signup(SignupRequest $request) {
         $data = $request->validated();
 
-        /**  @var \App\Models\User $user */
+        /** @var \App\Models\User $user */
         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password'])
         ]);
-
         $token = $user->createToken('main')->plainTextToken;
 
         return response([
@@ -33,7 +32,7 @@ class AuthController extends Controller
         
         $credentials = $request->validated();
         $remember = $credentials['remember'] ?? false;
-        unset($credential['remember']);
+        unset($credentials['remember']);
 
         if (!Auth::attempt($credentials, $remember)) {
             return response([
@@ -60,5 +59,10 @@ class AuthController extends Controller
         return response([
             'success' => true
         ]);
+    }
+
+    public function me(Request $request) {
+        return $request->user();
+        
     }
 }
