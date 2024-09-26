@@ -7,13 +7,14 @@ export default function ProductItem({ product }) {
     return (
         <>
             <div className="flex flex-col justify-center items-center gap-2 relative">
-                <motion.button
-                    className="flex items-center flex-col h-20 bg-contain aspect-square rounded-md"
-                    style={{ backgroundImage: `url(${product.image_url})` }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={() => setIsOpen(!isOpen)}
-                >
-                    {/* {product.image_url ? (
+                <div className="flex flex-col justify-center items-center">
+                    <motion.button
+                        className="flex items-center flex-col h-20 bg-contain aspect-square rounded-md"
+                        style={{ backgroundImage: `url(${product.image_url})` }}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={() => setIsOpen(!isOpen)}
+                    >
+                        {/* {product.image_url ? (
                         <img
                             className="rounded-md h-20"
                             src={product.image_url}
@@ -26,15 +27,20 @@ export default function ProductItem({ product }) {
                             alt=""
                         />
                     )} */}
-                </motion.button>
-                <h2>{product.name}</h2>
+                    </motion.button>
+                    <h2>
+                        {product.name}
+                        {product.id}
+                    </h2>
+                </div>
+
                 <AnimatePresence>
                     {isOpen && (
                         <motion.div
                             initial={{ y: -20, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                             exit={{ y: -20, opacity: 0 }}
-                            className=" z-10  w-auto min-w-[350px] rounded-md left-0 top-24 absolute"
+                            className=" z-10  w-auto min-w-[350px] rounded-md left-0 top-24 absolute flex flex-col gap-4"
                         >
                             <div className="flex flex-col gap-3">
                                 <motion.div
@@ -57,25 +63,32 @@ export default function ProductItem({ product }) {
                                         </p>
                                     </div>
 
-                                    {product.description && (
-                                        <div className="flex flex-row gap-2 items-center">
-                                            <h2 className="opacity-50">
-                                                Descipcion:
-                                            </h2>
+                                    <div className="flex flex-row gap-2 items-center">
+                                        <h2 className="opacity-50">
+                                            Descipcion:
+                                        </h2>
+                                        {product.description ? (
                                             <p>{product.description}</p>
-                                        </div>
-                                    )}
+                                        ) : (
+                                            <p className="opacity-50">
+                                                Descripcion no proporcionada
+                                            </p>
+                                        )}
+                                    </div>
 
-                                    {product.type && (
-                                        <div className="flex flex-row gap-2 items-center">
-                                            <h2 className="opacity-50">
-                                                Grupo:
-                                            </h2>
+                                    <div className="flex flex-row gap-2 items-center">
+                                        <h2 className="opacity-50">Grupo:</h2>
+                                        {product.type ? (
                                             <p className="font-bold text-lg">
                                                 {product.type}
                                             </p>
-                                        </div>
-                                    )}
+                                        ) : (
+                                            <p className="opacity-50">
+                                                Grupo no proporcionado
+                                            </p>
+                                        )}
+                                    </div>
+
                                     <div className="flex flex-row gap-2 items-center">
                                         <h2 className="opacity-50">
                                             Unidad de stock:
@@ -97,6 +110,20 @@ export default function ProductItem({ product }) {
                                         <p className="font-bold text-lg">{`${product.stock} ${product.ustock}`}</p>
                                     </div>
                                 </div>
+                            </div>
+                            <div className="flex flex-row justify-start items-center gap-4">
+                                <motion.button
+                                    whileHover={{ backgroundColor: "#EF4444" }}
+                                    className="border border-red-500 px-3 py-2 rounded-md"
+                                >
+                                    Eliminar
+                                </motion.button>
+                                <motion.button
+                                    whileHover={{ backgroundColor: "#3b82f6" }}
+                                    className="border border-blue-500 px-3 py-2 rounded-md"
+                                >
+                                    Actualizar
+                                </motion.button>
                             </div>
                         </motion.div>
                     )}

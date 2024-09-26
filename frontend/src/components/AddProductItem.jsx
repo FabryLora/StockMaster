@@ -1,8 +1,7 @@
-import { faImage } from "@fortawesome/free-solid-svg-icons";
+import { faImage, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
-import whitePlus from "../assets/plus-white.svg";
 import axiosClient from "../axios.js";
 
 export default function AddProductItem() {
@@ -20,6 +19,7 @@ export default function AddProductItem() {
     });
 
     const [error, setError] = useState("");
+    const [succ, setSucc] = useState(false);
 
     const onImageChange = (ev) => {
         const file = ev.target.files[0];
@@ -49,7 +49,9 @@ export default function AddProductItem() {
         axiosClient
             .post("product", payload)
             .then((res) => {
-                console.log(res);
+                if (res.status === 201) {
+                    setSucc(true);
+                }
             })
             .catch((err) => {
                 if (err && err.response) {
@@ -75,9 +77,9 @@ export default function AddProductItem() {
         <div className="flex flex-col justify-center items-center gap-3 self-start relative">
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="border p-4 rounded-md h-20 text-4xl aspect-square"
+                className="border p-4 rounded-md h-20 text-4xl aspect-square flex justify-center items-center"
             >
-                <img src={whitePlus} alt="" />
+                <FontAwesomeIcon icon={faPlus} size="xl" />
             </button>
             <AnimatePresence>
                 {isOpen && (
@@ -85,7 +87,7 @@ export default function AddProductItem() {
                         initial={{ y: -25, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         exit={{ y: -25, opacity: 0 }}
-                        className="border p-3 rounded-md absolute top-24 left-0 backdrop-blur-md flex flex-col gap-5"
+                        className=" p-4 rounded-md absolute top-24 left-0 backdrop-blur-md flex flex-col gap-5 bg-[#292f33]"
                     >
                         {error && (
                             <div className="bg-red-500 text-white py-2 px-3 rounded-md">
@@ -94,13 +96,19 @@ export default function AddProductItem() {
                                 ))}
                             </div>
                         )}
+                        {succ && (
+                            <div className="bg-green-500 text-white py-2 px-3 rounded-md">
+                                Producto creado exitosamente
+                            </div>
+                        )}
+
                         <form
                             className="flex flex-col gap-5"
                             action=""
                             method="post"
                             onSubmit={onSubmit}
                         >
-                            <div className="flex flex-row justify-evenly gap-2 items-center">
+                            <div className="flex flex-row justify-evenly gap-2 items-center border-b-2 pb-6">
                                 <div className="w-fit">
                                     {products.image_url ? (
                                         <img
@@ -127,6 +135,7 @@ export default function AddProductItem() {
                                 </button>
                             </div>
 
+                            <label htmlFor="name">Nombre:</label>
                             <input
                                 className="bg-transparent border rounded-md p-1"
                                 type="text"
@@ -139,11 +148,10 @@ export default function AddProductItem() {
                                         name: ev.target.value,
                                     })
                                 }
-                                placeholder="Nombre del producto..."
                             />
                             <label htmlFor="description">Descripcion:</label>
                             <textarea
-                                className="rounded-md text-black p-1 focus:outline-none bg-transparent border"
+                                className="rounded-md text-white p-1 focus:outline-none bg-transparent border"
                                 name="description"
                                 onChange={(ev) =>
                                     setProducts({
@@ -158,7 +166,7 @@ export default function AddProductItem() {
                                 Elegir el tipo de producto:
                             </label>
                             <select
-                                className="bg-transparent border rounded-md p-1"
+                                className="bg-transparent text-white border rounded-md p-1"
                                 name="tipos"
                                 id="tipos"
                                 onChange={(ev) =>
@@ -222,7 +230,7 @@ export default function AddProductItem() {
                                 />
                                 <label htmlFor="stock">Cantidad:</label>
                                 <input
-                                    className="text-black bg-transparent border rounded-md"
+                                    className="text-white pl-2 bg-transparent border rounded-md"
                                     type="number"
                                     name="stock"
                                     id="stock"
@@ -240,7 +248,7 @@ export default function AddProductItem() {
                                     Precio del producto:
                                 </label>
                                 <input
-                                    className="text-black bg-transparent border rounded-md"
+                                    className="text-white pl-2 bg-transparent border rounded-md"
                                     type="number"
                                     name="price"
                                     id="price"
@@ -261,7 +269,7 @@ export default function AddProductItem() {
                                 }}
                                 className="border rounded-md p-1 cursor-pointer"
                                 type="submit"
-                                value="Cargar"
+                                value="Cargar producto"
                             />
                         </form>
                     </motion.div>
