@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import logo from "../assets/logo-no-background.png";
 import axiosClient from "../axios";
 import { useStateContext } from "../contexts/ContextProvider";
 
@@ -40,74 +41,90 @@ export default function Signup() {
 
     return (
         <>
-            {error.__html && (
-                <div
-                    className="bg-red-500 rounded py-2 px-3 text-white"
-                    dangerouslySetInnerHTML={error}
-                ></div>
-            )}
-            <form
-                onSubmit={onSubmit}
-                className="flex flex-col gap-3"
-                action="#"
-                method="POST"
-            >
-                <input type="hidden" name="remember" defaultValue={true} />
-                <label htmlFor="name">Nombre de usuario</label>
+            <div className="h-screen flex justify-center items-center flex-col text-white p-4">
+                <div className="flex flex-col gap-10">
+                    <Link to={"/home"}>
+                        <img src={logo} width={500} alt="" />
+                    </Link>
+                    {error.__html && (
+                        <div
+                            className="bg-red-500 rounded py-2 px-3 text-white"
+                            dangerouslySetInnerHTML={error}
+                        ></div>
+                    )}
+                    <form
+                        onSubmit={onSubmit}
+                        className="flex flex-col gap-3"
+                        action="#"
+                        method="POST"
+                    >
+                        <input
+                            type="hidden"
+                            name="remember"
+                            defaultValue={true}
+                        />
+                        <label htmlFor="name">Nombre de usuario</label>
 
-                <input
-                    className="p-2 bg-transparent border rounded-md"
-                    type="text"
-                    required
-                    name="name"
-                    id="name"
-                    value={name}
-                    onChange={(ev) => setName(ev.target.value)}
-                />
-                <label htmlFor="email">Direccion de correo</label>
+                        <input
+                            className="p-2 bg-transparent border rounded-md"
+                            type="text"
+                            required
+                            name="name"
+                            id="name"
+                            value={name}
+                            onChange={(ev) => setName(ev.target.value)}
+                        />
+                        <label htmlFor="email">Direccion de correo</label>
 
-                <input
-                    className="p-2 bg-transparent border rounded-md"
-                    type="email"
-                    required
-                    name="email"
-                    id="email"
-                    value={email}
-                    onChange={(ev) => setEmail(ev.target.value)}
-                />
-                <label htmlFor="password">Contraseña</label>
+                        <input
+                            className="p-2 bg-transparent border rounded-md"
+                            type="email"
+                            required
+                            name="email"
+                            id="email"
+                            value={email}
+                            onChange={(ev) => setEmail(ev.target.value)}
+                        />
+                        <label htmlFor="password">Contraseña</label>
 
-                <input
-                    className="p-2 bg-transparent border rounded-md"
-                    type="password"
-                    name="password"
-                    id="password"
-                    required
-                    value={password}
-                    onChange={(ev) => setPassword(ev.target.value)}
-                />
-                <label htmlFor="password-confirmation">
-                    Confirmar contraseña
-                </label>
+                        <input
+                            className="p-2 bg-transparent border rounded-md"
+                            type="password"
+                            name="password"
+                            id="password"
+                            required
+                            value={password}
+                            onChange={(ev) => setPassword(ev.target.value)}
+                        />
+                        <label htmlFor="password-confirmation">
+                            Confirmar contraseña
+                        </label>
 
-                <input
-                    className="p-2 bg-transparent border rounded-md"
-                    type="password"
-                    name="password_confirmation"
-                    required
-                    id="password-confirmation"
-                    value={passwordConfirmation}
-                    onChange={(ev) => setPasswordConfirmation(ev.target.value)}
-                />
-                <input
-                    className="border rounded-md p-2 mt-5 hover:bg-white hover:text-black cursor-pointer"
-                    type="submit"
-                    value="Registrarse"
-                />
-                <Link to={"/login"} className="text-specialblue self-end">
-                    Ya estas registrado? Iniciar Sesion
-                </Link>
-            </form>
+                        <input
+                            className="p-2 bg-transparent border rounded-md"
+                            type="password"
+                            name="password_confirmation"
+                            required
+                            id="password-confirmation"
+                            value={passwordConfirmation}
+                            onChange={(ev) =>
+                                setPasswordConfirmation(ev.target.value)
+                            }
+                        />
+                        <input
+                            className="border rounded-md p-2 mt-5 hover:bg-white hover:text-black cursor-pointer"
+                            type="submit"
+                            value="Registrarse"
+                        />
+                        <Link
+                            to={"/login"}
+                            className="text-specialblue self-end"
+                        >
+                            Ya estas registrado? Iniciar Sesion
+                        </Link>
+                    </form>
+                </div>
+            </div>
         </>
     );
 }

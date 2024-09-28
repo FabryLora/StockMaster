@@ -7,13 +7,12 @@ import { Link, Navigate, Outlet } from "react-router-dom";
 import logo from "../assets/logo-no-background.png";
 import axiosClient from "../axios";
 import { useStateContext } from "../contexts/ContextProvider";
-/* import "./defaultlayout.css"; */
 
 export default function DefaultLayout() {
-    const MotionLink = motion(Link);
+    const MotionLink = motion.create(Link);
 
     const links = [
-        { to: "/products", title: "Productos" },
+        { to: "/productos", title: "Productos" },
         { to: "/ventas", title: "Ventas" },
         { to: "#", title: "Gestor de productos" },
         { to: "#", title: "Gestor de ventas" },
@@ -25,7 +24,7 @@ export default function DefaultLayout() {
         useStateContext();
 
     if (!userToken) {
-        return <Navigate to={"login"} />;
+        return <Navigate to={"home"} />;
     }
 
     const logout = (ev) => {
@@ -50,16 +49,16 @@ export default function DefaultLayout() {
     return (
         <>
             <header className="text-white font-gothic text-lg">
-                <nav className="flex flex-row justify-items-center items-center px-2 py-3 shadow-sm shadow-[#9FADBC] gap-5">
-                    <Link>
+                <nav className="flex flex-row justify-items-center items-center shadow-sm shadow-[#9FADBC] gap-5">
+                    <Link className="pl-2">
                         <img className="w-[200px]" src={logo} alt="logo" />
                     </Link>
-                    <ul className="w-full flex flex-row gap-4 text-base text-[#9FADBC]">
+                    <ul className="w-full flex flex-row gap-4 py-2 text-base text-[#9FADBC]">
                         {links.map((link) => (
                             <MotionLink
                                 to={link.to}
                                 key={link.title}
-                                className="py-2 px-3 rounded-md"
+                                className="py-1 px-3 rounded-md"
                                 whileHover={{ backgroundColor: "#2b2f37" }}
                             >
                                 {link.title}

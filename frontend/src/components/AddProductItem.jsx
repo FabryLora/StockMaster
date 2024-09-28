@@ -18,7 +18,7 @@ export default function AddProductItem() {
         stock: "",
     });
 
-    const [error, setError] = useState("");
+    const [error, setError] = useState(false);
     const [succ, setSucc] = useState(false);
 
     const onImageChange = (ev) => {
@@ -51,6 +51,7 @@ export default function AddProductItem() {
             .then((res) => {
                 if (res.status === 201) {
                     setSucc(true);
+                    setError(false);
                 }
             })
             .catch((err) => {
@@ -65,8 +66,9 @@ export default function AddProductItem() {
                             });
                         }
                     );
-
+                    setSucc(false);
                     setError(messagesArray);
+
                     console.log(messagesArray);
                 }
                 console.log(err, err.response);

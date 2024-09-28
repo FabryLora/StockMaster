@@ -9,6 +9,8 @@ export default {
             },
             fontFamily: {
                 gothic: ["Gothic A1", "sans-serif"],
+                nunito: ["Nunito", "sans-serif"],
+                poppins: ["Poppins", "sans-serif"],
             },
         },
     },

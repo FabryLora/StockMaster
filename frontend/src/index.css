@@ -1,6 +1,12 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito:ital@0;1&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+    background-color: #1d2024;
+}
 
 html {
     overflow-y: scroll;
