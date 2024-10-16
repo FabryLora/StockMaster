@@ -86,7 +86,7 @@ export default function ProductItem({ product }) {
                             initial={{ y: -20, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                             exit={{ y: -20, opacity: 0 }}
-                            className=" z-10  w-auto min-w-[350px] rounded-md left-0 top-24 absolute flex flex-col gap-4 bg-[#292F33]"
+                            className=" z-10  w-auto min-w-[350px] rounded-md right-0 top-24 absolute flex flex-col gap-4 bg-[#292F33]"
                         >
                             {succ && (
                                 <div className="bg-green-500 text-white py-2 px-3 rounded-md">

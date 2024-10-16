@@ -29,6 +29,7 @@ class ProductUpdateRequest extends FormRequest
             'image' => "nullable|string",
             'user_id' => "exists:users,id",
             'description' => "nullable|string|max:500",
+            'stock' => "required|numeric|min:0"
         ];
     }
 }

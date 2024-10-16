@@ -1,7 +1,7 @@
 import { faImage, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axiosClient from "../axios.js";
 
 export default function AddProductItem() {
@@ -75,6 +75,16 @@ export default function AddProductItem() {
             });
     };
 
+    useEffect(() => {
+        if (succ) {
+            const timer = setTimeout(() => {
+                setSucc(null);
+            }, 3000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [succ]);
+
     return (
         <div className="flex flex-col justify-center items-center gap-3 self-start relative">
             <button
@@ -89,7 +99,7 @@ export default function AddProductItem() {
                         initial={{ y: -25, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         exit={{ y: -25, opacity: 0 }}
-                        className=" p-4 rounded-md absolute top-24 left-0 backdrop-blur-md flex flex-col gap-5 bg-[#292f33]"
+                        className=" p-4 rounded-md absolute top-24 left-0 backdrop-blur-md flex flex-col gap-5 bg-[#292f33] z-10"
                     >
                         {error && (
                             <div className="bg-red-500 text-white py-2 px-3 rounded-md">
@@ -98,11 +108,16 @@ export default function AddProductItem() {
                                 ))}
                             </div>
                         )}
-                        {succ && (
-                            <div className="bg-green-500 text-white py-2 px-3 rounded-md">
-                                Producto creado exitosamente
-                            </div>
-                        )}
+                        <AnimatePresence>
+                            {succ && (
+                                <motion.div
+                                    exit={{ opacity: 0 }}
+                                    className="bg-green-500 text-white py-2 px-3 rounded-md"
+                                >
+                                    Producto creado exitosamente
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
 
                         <form
                             className="flex flex-col gap-5"

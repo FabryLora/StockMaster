@@ -23,13 +23,9 @@ export default function DefaultLayout() {
     const { currentUser, userToken, setCurrentUser, setUserToken } =
         useStateContext();
 
-    if (!userToken) {
-        return <Navigate to={"home"} />;
-    }
-
     const logout = (ev) => {
         ev.preventDefault();
-        axiosClient.post("/logout").then((res) => {
+        axiosClient.post("/logout").then(() => {
             setCurrentUser({});
             setUserToken(null);
         });
@@ -46,6 +42,9 @@ export default function DefaultLayout() {
             });
     }, [setCurrentUser]);
 
+    if (!userToken) {
+        return <Navigate to={"home"} />;
+    }
     return (
         <>
             <header className="text-white font-gothic text-lg">
@@ -86,7 +85,7 @@ export default function DefaultLayout() {
                                     initial={{ y: -20, opacity: 0 }}
                                     animate={{ y: 10, opacity: 1 }}
                                     exit={{ y: -20, opacity: 0 }}
-                                    className="bg-[#292f33] rounded-md p-4 w-fit absolute -right-4 overflow-hidden flex flex-col gap-2"
+                                    className="bg-[#292f33] rounded-md p-4 w-fit absolute -right-4 overflow-hidden flex flex-col gap-2 z-10"
                                 >
                                     <div className="text-base">
                                         <p>{currentUser.name}</p>
