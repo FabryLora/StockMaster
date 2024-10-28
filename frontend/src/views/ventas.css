@@ -12,3 +12,9 @@ input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
+
+input[type="radio"]:checked + span {
+    background-color: white;
+    color: black;
+    border: 2px solid white;
+}

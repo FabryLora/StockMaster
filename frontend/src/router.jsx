@@ -1,6 +1,7 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import DefaultLayout from "./components/DefaultLayout.jsx";
 import GuestLayout from "./components/GuestLayout.jsx";
+import GestorDeVentas from "./views/GestorDeVentas.jsx";
 import HomePage from "./views/HomePage.jsx";
 import Login from "./views/Login.jsx";
 import Productos from "./views/Productos.jsx";
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
             {
                 path: "/ventas",
                 element: <Ventas />,
+            },
+            {
+                path: "/gestordeventas",
+                element: <GestorDeVentas />,
             },
         ],
     },

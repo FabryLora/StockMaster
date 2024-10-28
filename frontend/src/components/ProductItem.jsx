@@ -1,7 +1,11 @@
-import { faPenToSquare, faQuestion } from "@fortawesome/free-solid-svg-icons";
+import {
+    faPenToSquare,
+    faQuestion,
+    faX,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axiosClient from "../axios";
 
 export default function ProductItem({ product }) {
@@ -9,6 +13,7 @@ export default function ProductItem({ product }) {
     const [succ, setSucc] = useState(false);
     const [deleteRes, setDeleteRes] = useState(false);
     const FontAwesomeAnimated = motion.create(FontAwesomeIcon);
+    const [blackScreen, setBlackScreen] = useState(false);
 
     const [productos, setProductos] = useState({
         name: product.name,
@@ -20,6 +25,16 @@ export default function ProductItem({ product }) {
         ustock: product.ustock,
         stock: product.stock,
     });
+
+    useEffect(() => {
+        if (succ) {
+            const timer = setTimeout(() => {
+                setSucc(null);
+            }, 3000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [succ]);
 
     const onImageChange = (ev) => {
         const file = ev.target.files[0];
@@ -63,13 +78,37 @@ export default function ProductItem({ product }) {
 
     return (
         <>
-            <div className="flex flex-col justify-center items-center gap-2 relative">
+            <div className="flex flex-col justify-center items-center gap-2">
+                <AnimatePresence>
+                    {succ && (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="bg-green-500 text-white py-2 px-3 rounded-md absolute top-10 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30"
+                        >
+                            Producto actualizado exitosamente
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
+                {deleteRes && (
+                    <div className="bg-green-500 text-white py-2 px-3 rounded-md absolute top-10 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                        Producto eliminado exitosamente
+                    </div>
+                )}
+                {blackScreen && (
+                    <div className="absolute top-0 left-0 bg-black opacity-50 w-screen h-screen z-20"></div>
+                )}
                 <div className="flex flex-col justify-center items-center">
                     <motion.button
                         className="flex items-center justify-center flex-col h-20 bg-contain aspect-square rounded-md"
                         style={{ backgroundImage: `url(${product.image_url})` }}
                         whileTap={{ scale: 0.9 }}
-                        onClick={() => setIsOpen(!isOpen)}
+                        onClick={() => {
+                            setIsOpen(!isOpen);
+                            setBlackScreen(!blackScreen);
+                        }}
                     >
                         {!product.image_url && (
                             <div className="border w-full h-full flex items-center justify-center rounded-md">
@@ -83,26 +122,32 @@ export default function ProductItem({ product }) {
                 <AnimatePresence>
                     {isOpen && (
                         <motion.div
-                            initial={{ y: -20, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            exit={{ y: -20, opacity: 0 }}
-                            className=" z-10  w-auto min-w-[350px] rounded-md right-0 top-24 absolute flex flex-col gap-4 bg-[#292F33]"
+                            initial={{ scale: 0, x: "-50%", y: "-50%" }}
+                            animate={{ scale: 1 }}
+                            exit={{ scale: 0 }}
+                            className="p-4 rounded-md absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col gap-4 bg-[#292f33] z-20 w-[575px] h-fit"
                         >
-                            {succ && (
-                                <div className="bg-green-500 text-white py-2 px-3 rounded-md">
-                                    Producto actualizado exitosamente (recargue
-                                    la pagina)
-                                </div>
-                            )}
+                            <button
+                                onClick={() => {
+                                    setIsOpen(!isOpen);
+                                    setBlackScreen(!blackScreen);
+                                }}
+                                className="border border-red-500 rounded-md w-7 h-7 self-end"
+                            >
+                                <FontAwesomeIcon
+                                    icon={faX}
+                                    style={{ color: "#ef4444" }}
+                                />
+                            </button>
+
                             {deleteRes && (
                                 <div className="bg-green-500 text-white py-2 px-3 rounded-md">
-                                    Producto eliminado exitosamente (recargue la
-                                    pagina)
+                                    Producto eliminado exitosamente
                                 </div>
                             )}
                             <div className="flex flex-col gap-3 items-center">
                                 <motion.div
-                                    className="rounded-md w-fit"
+                                    className="rounded-md w-fit min-h-[287px] flex items-center"
                                     whileHover={{
                                         backgroundColor: "#000",
                                         opacity: 0.5,
@@ -131,7 +176,7 @@ export default function ProductItem({ product }) {
                                         )}
                                     </button>
                                 </motion.div>
-                                <div className="flex flex-col gap-1">
+                                <div className="flex flex-col gap-1 w-full">
                                     <div className="flex flex-row gap-2 items-center justify-between">
                                         <h2 className="opacity-50">Nombre:</h2>
                                         <input
@@ -261,18 +306,18 @@ export default function ProductItem({ product }) {
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex flex-row justify-evenly items-center gap-4 pb-2">
+                            <div className="flex flex-row justify-evenly items-center py-3">
                                 <motion.button
                                     onClick={onDeleteClick}
                                     whileHover={{ backgroundColor: "#EF4444" }}
-                                    className="border border-red-500 px-3 py-2 rounded-md"
+                                    className="border border-red-500 px-10 py-2 rounded-md"
                                 >
                                     Eliminar
                                 </motion.button>
                                 <motion.button
                                     onClick={update}
                                     whileHover={{ backgroundColor: "#3b82f6" }}
-                                    className="border border-blue-500 px-3 py-2 rounded-md"
+                                    className="border border-blue-500 px-10 py-2 rounded-md"
                                 >
                                     Actualizar
                                 </motion.button>

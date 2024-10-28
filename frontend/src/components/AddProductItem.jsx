@@ -1,4 +1,4 @@
-import { faImage, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faImage, faPlus, faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
@@ -6,7 +6,7 @@ import axiosClient from "../axios.js";
 
 export default function AddProductItem() {
     const [isOpen, setIsOpen] = useState(false);
-
+    const [blackScreen, setBlackScreen] = useState(false);
     const [products, setProducts] = useState({
         name: "",
         image: null,
@@ -86,9 +86,28 @@ export default function AddProductItem() {
     }, [succ]);
 
     return (
-        <div className="flex flex-col justify-center items-center gap-3 self-start relative">
+        <div className="flex flex-col justify-center items-center gap-3 self-start">
+            <AnimatePresence>
+                {succ && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="absolute top-10 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-green-500 text-white py-2 px-3 rounded-md"
+                    >
+                        Producto creado exitosamente
+                    </motion.div>
+                )}
+            </AnimatePresence>
+            {blackScreen && (
+                <div className="absolute top-0 left-0 bg-black opacity-50 w-screen h-screen z-20"></div>
+            )}
+
             <button
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={() => {
+                    setIsOpen(!isOpen);
+                    setBlackScreen(!blackScreen);
+                }}
                 className="border p-4 rounded-md h-20 text-4xl aspect-square flex justify-center items-center"
             >
                 <FontAwesomeIcon icon={faPlus} size="xl" />
@@ -96,11 +115,23 @@ export default function AddProductItem() {
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
-                        initial={{ y: -25, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        exit={{ y: -25, opacity: 0 }}
-                        className=" p-4 rounded-md absolute top-24 left-0 backdrop-blur-md flex flex-col gap-5 bg-[#292f33] z-10"
+                        initial={{ scale: 0, x: "-50%", y: "-50%" }}
+                        animate={{ scale: 1 }}
+                        exit={{ scale: 0 }}
+                        className="p-4 rounded-md absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col gap-5 bg-[#292f33] z-20"
                     >
+                        <button
+                            onClick={() => {
+                                setIsOpen(!isOpen);
+                                setBlackScreen(!blackScreen);
+                            }}
+                            className="absolute right-5 border border-red-500 rounded-md w-7 h-7"
+                        >
+                            <FontAwesomeIcon
+                                icon={faX}
+                                style={{ color: "#ef4444" }}
+                            />
+                        </button>
                         {error && (
                             <div className="bg-red-500 text-white py-2 px-3 rounded-md">
                                 {error.map((error, index) => (
@@ -108,16 +139,6 @@ export default function AddProductItem() {
                                 ))}
                             </div>
                         )}
-                        <AnimatePresence>
-                            {succ && (
-                                <motion.div
-                                    exit={{ opacity: 0 }}
-                                    className="bg-green-500 text-white py-2 px-3 rounded-md"
-                                >
-                                    Producto creado exitosamente
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
 
                         <form
                             className="flex flex-col gap-5"

@@ -168,13 +168,13 @@ export default function Productos() {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        setLoading(true);
+        /* setLoading(true); */
         axiosClient.get("/product").then(({ data }) => {
             setProducts(data.data);
             setFilteredProducts(data.data);
-            setLoading(false);
+            /* setLoading(false); */
         });
-    }, []);
+    }, [products]);
 
     const handleSearch = (event) => {
         const value = event.target.value;
@@ -213,7 +213,7 @@ export default function Productos() {
     };
 
     return (
-        <div className="">
+        <div>
             <div>
                 {/* Mobile filter dialog */}
                 <Dialog

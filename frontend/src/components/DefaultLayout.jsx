@@ -15,7 +15,7 @@ export default function DefaultLayout() {
         { to: "/productos", title: "Productos" },
         { to: "/ventas", title: "Ventas" },
         { to: "#", title: "Gestor de productos" },
-        { to: "#", title: "Gestor de ventas" },
+        { to: "/gestordeventas", title: "Gestor de ventas" },
     ];
 
     const [isOpen, setIsOpen] = useState(false);
