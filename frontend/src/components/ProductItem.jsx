@@ -102,7 +102,7 @@ export default function ProductItem({ product }) {
                 )}
                 <div className="flex flex-col justify-center items-center">
                     <motion.button
-                        className="flex items-center justify-center flex-col h-20 bg-contain aspect-square rounded-md"
+                        className="flex items-center justify-center flex-col h-20 bg-center aspect-square rounded-md bg-no-repeat bg-cover"
                         style={{ backgroundImage: `url(${product.image_url})` }}
                         whileTap={{ scale: 0.9 }}
                         onClick={() => {

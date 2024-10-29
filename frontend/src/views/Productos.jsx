@@ -111,8 +111,8 @@ const sortOptions = [
     { name: "A-Z", value: "A-Z", current: true },
     { name: "Z-A", value: "Z-A", current: false },
 
-    { name: "Precio: bajo a alto", value: "priceDesc", current: false },
-    { name: "Precio: alto a bajo", value: "priceAsc", current: false },
+    { name: "Precio: alto a bajo", value: "priceDesc", current: false },
+    { name: "Precio: bajo a alto", value: "priceAsc", current: false },
 ];
 const subCategories = [
     { name: "Totes", href: "#" },
@@ -123,35 +123,11 @@ const subCategories = [
 ];
 const filters = [
     {
-        id: "color",
-        name: "Color",
-        options: [
-            { value: "white", label: "White", checked: false },
-            { value: "beige", label: "Beige", checked: false },
-            { value: "blue", label: "Blue", checked: true },
-            { value: "brown", label: "Brown", checked: false },
-            { value: "green", label: "Green", checked: false },
-            { value: "purple", label: "Purple", checked: false },
-        ],
-    },
-    {
         id: "category",
         name: "Categoria",
         options: [
             { value: "Telas", label: "Telas", checked: false },
             { value: "Lanas", label: "Lanas", checked: false },
-        ],
-    },
-    {
-        id: "size",
-        name: "Size",
-        options: [
-            { value: "2l", label: "2L", checked: false },
-            { value: "6l", label: "6L", checked: false },
-            { value: "12l", label: "12L", checked: false },
-            { value: "18l", label: "18L", checked: false },
-            { value: "20l", label: "20L", checked: false },
-            { value: "40l", label: "40L", checked: true },
         ],
     },
 ];
@@ -166,15 +142,16 @@ export default function Productos() {
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [loading, setLoading] = useState(false);
+    const [sortName, setSortName] = useState("Ordenar");
 
     useEffect(() => {
-        /* setLoading(true); */
+        setLoading(true);
         axiosClient.get("/product").then(({ data }) => {
             setProducts(data.data);
             setFilteredProducts(data.data);
-            /* setLoading(false); */
+            setLoading(false);
         });
-    }, [products]);
+    }, []);
 
     const handleSearch = (event) => {
         const value = event.target.value;
@@ -195,15 +172,20 @@ export default function Productos() {
         switch (option) {
             case "A-Z":
                 sortedProducts.sort((a, b) => a.name.localeCompare(b.name));
+                setSortName("A-Z");
                 break;
             case "Z-A":
                 sortedProducts.sort((a, b) => b.name.localeCompare(a.name));
+                setSortName("Z-A");
                 break;
+
             case "priceAsc":
                 sortedProducts.sort((a, b) => a.price - b.price);
+                setSortName("Precio: bajo a alto");
                 break;
             case "priceDesc":
                 sortedProducts.sort((a, b) => b.price - a.price);
+                setSortName("Precio: alto a bajo");
                 break;
             default:
                 break;
@@ -229,7 +211,7 @@ export default function Productos() {
                     <div className="fixed inset-0 z-40 flex">
                         <DialogPanel
                             transition
-                            className="relative ml-auto flex h-full w-full max-w-xs transform flex-col overflow-y-auto bg-white py-4 pb-12 shadow-xl transition duration-300 ease-in-out data-[closed]:translate-x-full"
+                            className="relative ml-auto flex h-full w-full max-w-xs transform flex-col overflow-y-auto bg-[#1d2024] py-4 pb-12 shadow-xl transition duration-300 ease-in-out data-[closed]:translate-x-full"
                         >
                             <div className="flex items-center justify-between px-4">
                                 <h2 className="text-lg font-medium text-white">
@@ -238,7 +220,7 @@ export default function Productos() {
                                 <button
                                     type="button"
                                     onClick={() => setMobileFiltersOpen(false)}
-                                    className="-mr-2 flex h-10 w-10 items-center justify-center rounded-md bg-white p-2 text-white"
+                                    className="-mr-2 flex h-10 w-10 items-center justify-center rounded-md border p-2 text-white"
                                 >
                                     <span className="sr-only">Close menu</span>
                                     <XMarkIcon
@@ -274,7 +256,7 @@ export default function Productos() {
                                         className="border-t border-gray-200 px-4 py-6"
                                     >
                                         <h3 className="-mx-2 -my-3 flow-root">
-                                            <DisclosureButton className="group flex w-full items-center justify-between bg-white px-2 py-3 text-white hover:text-white">
+                                            <DisclosureButton className="group flex w-full items-center justify-between  px-2 py-3 text-white hover:text-white">
                                                 <span className="font-medium text-white">
                                                     {section.name}
                                                 </span>
@@ -341,7 +323,7 @@ export default function Productos() {
                             >
                                 <div>
                                     <MenuButton className="group inline-flex justify-center text-sm font-medium text-white hover:text-gray-300">
-                                        Ordenar
+                                        {sortName}
                                         <ChevronDownIcon
                                             aria-hidden="true"
                                             className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-white group-hover:text-gray-300"

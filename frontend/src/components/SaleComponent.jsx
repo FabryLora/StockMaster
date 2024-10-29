@@ -12,7 +12,7 @@ export default function SaleComponent({ sale }) {
     return (
         <div
             key={sale.id}
-            className="flex flex-row w-[95%] p-3 border border-[#6b7280] h-12 rounded-md justify-between"
+            className="flex flex-row w-[95%] p-3 border-2 border-[#017cc5] text-[#017cc5] font-bold h-12 rounded-md justify-between"
         >
             <div className="flex items-center gap-2">
                 <h3 className="text-lg">{sale.product_name}</h3>

@@ -223,7 +223,7 @@ export default function AddProductItem() {
                             <h2 className="text-lg">
                                 Elegir unidad de almacenamiento:
                             </h2>
-                            <div className="flex flex-row gap-3">
+                            <div className="flex flex-row gap-3 items-center">
                                 <label htmlFor="unidad">Unidad</label>
                                 <input
                                     onChange={(ev) =>

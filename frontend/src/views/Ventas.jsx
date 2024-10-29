@@ -35,6 +35,7 @@ export default function Ventas() {
     });
     const [error, setError] = useState(false);
     const [succ, setSucc] = useState(false);
+    const [instantImage, setInstantImage] = useState("");
 
     useEffect(() => {
         setSales({
@@ -148,7 +149,7 @@ export default function Ventas() {
                     </motion.div>
                 )}
             </AnimatePresence>
-            <div className="h-screen border-r relative col-span-1 row-span-9">
+            <div className="h-screen border-r border-specialblue relative col-span-1 row-span-9">
                 <form
                     className="flex flex-col justify-center items-center p-3 gap-10"
                     action=""
@@ -157,7 +158,7 @@ export default function Ventas() {
                 >
                     <div className="relative">
                         <input
-                            className="bg-transparent border rounded-md w-fit"
+                            className="bg-transparent border border-specialblue rounded-md w-fit"
                             type="text"
                             name=""
                             onChange={handleSearch}
@@ -201,6 +202,9 @@ export default function Ventas() {
                                                     ...sales,
                                                     product_name: product.name,
                                                 });
+                                                setInstantImage(
+                                                    product.image_url
+                                                );
                                             }}
                                         >
                                             {product.image_url ? (
@@ -235,20 +239,30 @@ export default function Ventas() {
                         </div>
                     )}
 
-                    <div className="flex flex-col gap-2 w-full text-gray-500">
-                        <h3>ID: {infoProduct.id}</h3>
-                        <h3>Producto: {infoProduct.name}</h3>
-                        <h3>
-                            Cantidad disponible: {infoProduct.stock}{" "}
-                            {infoProduct.ustock}
-                        </h3>
-                        <h3>
-                            Precio x {infoProduct.ustock}: ${infoProduct.price}{" "}
-                        </h3>
+                    <div className="flex flex-col w-full gap-5 text-gray-500">
+                        <div
+                            className="w-32 h-32 border rounded-md self-center bg-cover bg-center bg-no-repeat"
+                            style={{ backgroundImage: `url(${instantImage})` }}
+                        ></div>
+                        <div className="flex flex-col gap-3">
+                            <h3>ID: {infoProduct.id}</h3>
+                            <h3>Producto: {infoProduct.name}</h3>
+                            <h3>
+                                Cantidad disponible: {infoProduct.stock}{" "}
+                                {infoProduct.ustock}
+                            </h3>
+                            <h3>
+                                Precio x {infoProduct.ustock}: $
+                                {infoProduct.price}{" "}
+                            </h3>
+                        </div>
                     </div>
 
-                    <div className="flex flex-col items-center w-full gap-3">
-                        <h2>Descuento:</h2>
+                    <fieldset className="flex flex-col items-center w-full gap-3 border border-specialblue py-4 rounded-md text-center">
+                        <legend className="text-specialblue text-xl font-bold">
+                            Descuento
+                        </legend>
+                        {/* <h2 className="text-xl">Descuento</h2> */}
                         {/* <div className="flex flex-row gap-2 justify-evenly w-full">
                             <motion.button
                                 whileHover={{
@@ -304,7 +318,7 @@ export default function Ventas() {
                             </motion.button>
                         </div> */}
                         <div className="flex flex-row items-center justify-evenly w-full">
-                            <label className="flex items-center justify-center border px-4 py-2 rounded cursor-pointer w-[48px] h-[42px]">
+                            <label className="flex items-center justify-center border px-4 py-2 rounded cursor-pointer w-[48px] h-[42px] border-specialblue">
                                 <input
                                     className="hidden"
                                     type="radio"
@@ -320,7 +334,7 @@ export default function Ventas() {
                                     0%
                                 </span>
                             </label>
-                            <label className="flex items-center justify-center border px-4 py-2 rounded cursor-pointer w-[48px] h-[42px]">
+                            <label className="flex items-center justify-center border px-4 py-2 rounded cursor-pointer w-[48px] h-[42px] border-specialblue">
                                 <input
                                     className="hidden"
                                     type="radio"
@@ -336,7 +350,7 @@ export default function Ventas() {
                                     5%
                                 </span>
                             </label>
-                            <label className="flex items-center justify-center border px-4 py-2 rounded cursor-pointer w-[48px] h-[42px]">
+                            <label className="flex items-center justify-center border px-4 py-2 rounded cursor-pointer w-[48px] h-[42px] border-specialblue">
                                 <input
                                     className="hidden"
                                     type="radio"
@@ -352,7 +366,7 @@ export default function Ventas() {
                                     10%
                                 </span>
                             </label>
-                            <label className="relative flex items-center justify-center border px-4 py-2 rounded cursor-pointer w-[48px] h-[42px]">
+                            <label className="relative flex items-center justify-center border px-4 py-2 rounded cursor-pointer w-[48px] h-[42px] border-specialblue">
                                 <input
                                     className="hidden"
                                     type="radio"
@@ -369,33 +383,44 @@ export default function Ventas() {
                                 </span>
                             </label>
                         </div>
-                    </div>
+                    </fieldset>
 
-                    <div className="flex flex-row gap-2 items-center">
-                        <h2>Cantidad:</h2>
+                    <fieldset className="flex flex-col w-full border border-specialblue p-4 rounded-md gap-2 items-center text-center">
+                        <legend className="text-xl font-bold text-specialblue">
+                            Cantidad
+                        </legend>
+                        {/* <h2 className="text-xl">Cantidad</h2> */}
                         <input
                             onChange={(ev) => setCant(ev.target.value)}
-                            className="bg-transparent border p-2 rounded-md"
+                            className="bg-transparent border p-2 rounded-md border-specialblue text-center"
                             type="number"
                             name=""
                             placeholder="Cantidad..."
                             id=""
                         />
-                    </div>
+                    </fieldset>
 
-                    <div className="flex flex-col items-center w-full gap-2">
-                        <h2>Precio final:</h2>
+                    <fieldset className="flex flex-col items-center w-full gap-2 rounded-md border border-specialblue p-4 text-center">
+                        <legend className="text-specialblue text-xl font-bold">
+                            Precio Final
+                        </legend>
+                        {/* <h2 className="text-xl">Precio final</h2> */}
                         <input
-                            className="bg-transparent p-2 rounded-md border w-full"
+                            className="bg-transparent p-2 rounded-md border border-specialblue text-center"
                             type="number"
                             name=""
                             id=""
                             value={finalPrice}
                         />
-                    </div>
+                    </fieldset>
 
-                    <input
-                        className="border rounded-md w-4/5 py-2 cursor-pointer text-lg"
+                    <motion.input
+                        whileHover={{
+                            background: "#017cc5",
+                            color: "#fff",
+                        }}
+                        className="border border-specialblue font-bold rounded-md w-4/5 py-2 cursor-pointer text-lg"
+                        style={{ color: "#017cc5" }}
                         type="submit"
                         value="Agregar"
                     />
@@ -408,8 +433,10 @@ export default function Ventas() {
                 ))}
             </div>
 
-            <div className="w-full h-[100px] border-t self-end flex items-center justify-end pr-4 col-span-4">
-                <div className="text-white text-5xl">${totalFinalPrice}</div>
+            <div className="w-full h-[100px] border-t border-specialblue self-end flex items-center justify-end pr-4 col-span-4">
+                <div className="text-specialblue text-5xl">
+                    ${totalFinalPrice}
+                </div>
             </div>
         </div>
     );

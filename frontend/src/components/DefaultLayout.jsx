@@ -48,7 +48,7 @@ export default function DefaultLayout() {
     return (
         <>
             <header className="text-white font-gothic text-lg">
-                <nav className="flex flex-row justify-items-center items-center shadow-sm shadow-[#9FADBC] gap-5">
+                <nav className="flex flex-row justify-items-center items-center shadow-sm shadow-specialblue gap-5">
                     <Link className="pl-2">
                         <img className="w-[200px]" src={logo} alt="logo" />
                     </Link>

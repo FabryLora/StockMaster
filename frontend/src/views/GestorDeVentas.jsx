@@ -28,6 +28,7 @@ export default function GestorDeVentas() {
     const [year, setYear] = useState(currentYear);
     const [month, setMoth] = useState(currentMonth);
     const [days, setDays] = useState([]);
+    const [monthTotal, setMonthTotal] = useState(0);
 
     useEffect(() => {
         axiosClient.get("/sale").then(({ data }) => {
@@ -43,6 +44,30 @@ export default function GestorDeVentas() {
         }
         setDays(auxArray);
     }, [month, year]);
+
+    useEffect(() => {
+        const filteredArrayByMonth = sales.filter(
+            (sale) =>
+                new Date(sale.created_at).getMonth() === month &&
+                new Date(sale.created_at).getFullYear() === year
+        );
+
+        sales.forEach((sale) => {
+            console.log(new Date(sale.created_at).getMonth() === month);
+        });
+
+        const totalRaw = filteredArrayByMonth.map((sale) => {
+            return sale.final_price;
+        });
+
+        const total = totalRaw.reduce((acc, curr) => acc + Number(curr), 0);
+
+        setMonthTotal(
+            total.toLocaleString("es-AR", {
+                minimumFractionDigits: 2,
+            })
+        );
+    }, [month, year, sales]);
 
     return (
         <div className="flex flex-col gap-10 items-center">
@@ -104,6 +129,9 @@ export default function GestorDeVentas() {
                         sales={sales}
                     />
                 ))}
+            </div>
+            <div className="text-white text-5xl self-end pr-10">
+                Total del mes: ${monthTotal}
             </div>
         </div>
     );
