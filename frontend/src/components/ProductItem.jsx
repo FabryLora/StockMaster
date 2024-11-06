@@ -14,7 +14,7 @@ export default function ProductItem({ product }) {
     const [deleteRes, setDeleteRes] = useState(false);
     const FontAwesomeAnimated = motion.create(FontAwesomeIcon);
     const [blackScreen, setBlackScreen] = useState(false);
-
+    const [error, setError] = useState(false);
     const [productos, setProductos] = useState({
         name: product.name,
         image: product.image,
@@ -52,6 +52,18 @@ export default function ProductItem({ product }) {
         reader.readAsDataURL(file);
     };
 
+    const translateErrorMessages = (messages) => {
+        const translations = {
+            "The name field is required.": "El campo de nombre es obligatorio.",
+            "The price field is required.": "El campo Precio es obligatorio.",
+            "The ustock field is required.":
+                "El campo Unidad de stock es obligatorio",
+            "The stock field is required.": "El campo Stock es obligatorio",
+        };
+
+        return messages.map((message) => translations[message] || message);
+    };
+
     const update = (e) => {
         e.preventDefault();
         const payload = { ...productos };
@@ -59,11 +71,29 @@ export default function ProductItem({ product }) {
             payload.image = payload.image_url;
         }
         delete payload.image_url;
-        axiosClient.put(`/product/${product.id}`, payload).then((res) => {
-            if (res.status === 200) {
-                setSucc(true);
-            }
-        });
+        axiosClient
+            .put(`/product/${product.id}`, payload)
+            .then((res) => {
+                if (res.status === 200) {
+                    setSucc(true);
+                }
+            })
+            .catch((err) => {
+                if (err && err.response) {
+                    const errorMessages = err.response.data.errors;
+                    const messagesArray = [];
+
+                    Object.values(errorMessages).forEach(
+                        (messagesArrayField) => {
+                            messagesArrayField.forEach((message) => {
+                                messagesArray.push(message);
+                            });
+                        }
+                    );
+                    setSucc(false);
+                    setError(translateErrorMessages(messagesArray));
+                }
+            });
     };
 
     const onDeleteClick = () => {
@@ -75,6 +105,24 @@ export default function ProductItem({ product }) {
             });
         }
     };
+
+    const limitText = (texto, limite) => {
+        return texto.length > limite
+            ? texto.substring(0, limite) + ".."
+            : texto;
+    };
+
+    useEffect(() => {
+        setIsOpen(false);
+        setBlackScreen(false);
+        if (deleteRes) {
+            const timer = setTimeout(() => {
+                setDeleteRes(false);
+            }, 3000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [deleteRes]);
 
     return (
         <>
@@ -90,16 +138,31 @@ export default function ProductItem({ product }) {
                             Producto actualizado exitosamente
                         </motion.div>
                     )}
-                </AnimatePresence>
 
-                {deleteRes && (
-                    <div className="bg-green-500 text-white py-2 px-3 rounded-md absolute top-10 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                        Producto eliminado exitosamente
-                    </div>
-                )}
-                {blackScreen && (
-                    <div className="absolute top-0 left-0 bg-black opacity-50 w-screen h-screen z-20"></div>
-                )}
+                    {deleteRes && (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="bg-green-500 text-white py-2 px-3 rounded-md absolute top-10 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30"
+                        >
+                            Producto eliminado exitosamente
+                        </motion.div>
+                    )}
+                    {blackScreen && (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 0.5 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => {
+                                setIsOpen(!isOpen);
+                                setBlackScreen(!blackScreen);
+                                setError(false);
+                            }}
+                            className="absolute top-0 left-0 bg-black w-screen h-screen z-20"
+                        ></motion.div>
+                    )}
+                </AnimatePresence>
                 <div className="flex flex-col justify-center items-center">
                     <motion.button
                         className="flex items-center justify-center flex-col h-20 bg-center aspect-square rounded-md bg-no-repeat bg-cover"
@@ -108,6 +171,7 @@ export default function ProductItem({ product }) {
                         onClick={() => {
                             setIsOpen(!isOpen);
                             setBlackScreen(!blackScreen);
+                            setError(false);
                         }}
                     >
                         {!product.image_url && (
@@ -116,7 +180,7 @@ export default function ProductItem({ product }) {
                             </div>
                         )}
                     </motion.button>
-                    <h2>{product.name}</h2>
+                    <h2>{limitText(product.name, 9)}</h2>
                 </div>
 
                 <AnimatePresence>
@@ -131,6 +195,7 @@ export default function ProductItem({ product }) {
                                 onClick={() => {
                                     setIsOpen(!isOpen);
                                     setBlackScreen(!blackScreen);
+                                    setError(false);
                                 }}
                                 className="border border-red-500 rounded-md w-7 h-7 self-end"
                             >
@@ -139,12 +204,14 @@ export default function ProductItem({ product }) {
                                     style={{ color: "#ef4444" }}
                                 />
                             </button>
-
-                            {deleteRes && (
-                                <div className="bg-green-500 text-white py-2 px-3 rounded-md">
-                                    Producto eliminado exitosamente
+                            {error && (
+                                <div className="bg-red-500 text-white py-2 px-3 rounded-md text-sm sm:text-base">
+                                    {error.map((error, index) => (
+                                        <p key={index}>{error}</p>
+                                    ))}
                                 </div>
                             )}
+
                             <div className="flex flex-col gap-3 items-center">
                                 <motion.div
                                     className="rounded-md w-fit min-h-[287px] flex items-center"
@@ -222,7 +289,9 @@ export default function ProductItem({ product }) {
                                     </div>
 
                                     <div className="flex flex-row gap-2 items-center justify-between">
-                                        <h2 className="opacity-50">Grupo:</h2>
+                                        <h2 className="opacity-50">
+                                            Categoria:
+                                        </h2>
                                         <select
                                             className="bg-transparent rounded-md p-2 w-[197px]"
                                             name="type"

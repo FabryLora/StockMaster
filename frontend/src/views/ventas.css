@@ -3,12 +3,11 @@
 }
 
 ::-webkit-scrollbar-track {
-    background-color: #fff; /* Color de fondo de la pista (track) */
+    background-color: #fff;
 }
 
 ::-webkit-scrollbar-thumb {
     background-color: #017cc5;
-    border-radius: 10px;
 }
 
 input[type="number"]::-webkit-inner-spin-button,

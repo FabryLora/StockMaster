@@ -136,7 +136,7 @@ export default function Ventas() {
     };
 
     return (
-        <div className="grid grid-cols-5 grid-rows-9 text-white">
+        <div className="flex flex-row text-white h-screen">
             <AnimatePresence>
                 {succ && (
                     <motion.div
@@ -149,7 +149,7 @@ export default function Ventas() {
                     </motion.div>
                 )}
             </AnimatePresence>
-            <div className="h-screen border-r border-specialblue relative col-span-1 row-span-9">
+            <div className="h-full border-r border-specialblue w-[26rem] relative overflow-y-scroll">
                 <form
                     className="flex flex-col justify-center items-center p-3 gap-10"
                     action=""
@@ -426,16 +426,17 @@ export default function Ventas() {
                     />
                 </form>
             </div>
+            <div className="flex flex-col w-full justify-between h-full">
+                <div className="flex flex-col py-4 items-center red gap-3 overflow-y-auto h-full">
+                    {showSales.map((infoSales) => (
+                        <SaleComponent key={infoSales.id} sale={infoSales} />
+                    ))}
+                </div>
 
-            <div className="flex flex-col col-span-4 row-span-8 py-4 items-center red gap-3">
-                {showSales.map((infoSales) => (
-                    <SaleComponent key={infoSales.id} sale={infoSales} />
-                ))}
-            </div>
-
-            <div className="w-full h-[100px] border-t border-specialblue self-end flex items-center justify-end pr-4 col-span-4">
-                <div className="text-specialblue text-5xl">
-                    ${totalFinalPrice}
+                <div className="w-full  border-t  bottom-0 border-specialblue self-end flex items-center justify-end pr-4">
+                    <div className="text-specialblue text-5xl p-2">
+                        ${totalFinalPrice}
+                    </div>
                 </div>
             </div>
         </div>

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SaleController;
 use Illuminate\Http\Request;
@@ -11,6 +12,7 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::get('/me', [AuthController::class, 'me']);
     Route::apiResource("/product", ProductController::class);
     Route::apiResource("/sale", SaleController::class);
+    Route::apiResource("/category", CategoryController::class);
     
 });
 

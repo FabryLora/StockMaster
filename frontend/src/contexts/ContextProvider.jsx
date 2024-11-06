@@ -1,10 +1,13 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import axiosClient from "../axios";
 
 const StateContext = createContext({
     currentUser: {},
     userToken: null,
+    categories: [],
     setCurrentUser: () => {},
     setUserToken: () => {},
+    fetchCategories: () => {},
 });
 
 export const ContextProvider = ({ children }) => {
@@ -12,6 +15,7 @@ export const ContextProvider = ({ children }) => {
     const [userToken, _setUserToken] = useState(
         localStorage.getItem("TOKEN") || ""
     );
+    const [categories, setCategories] = useState([]);
 
     const setUserToken = (token) => {
         if (token) {
@@ -22,6 +26,21 @@ export const ContextProvider = ({ children }) => {
         _setUserToken(token);
     };
 
+    const fetchCategories = () => {
+        axiosClient
+            .get("/category")
+            .then((res) => {
+                setCategories(res.data.data);
+            })
+            .catch((error) => {
+                console.error("Error fetchong categories", error);
+            });
+    };
+
+    useEffect(() => {
+        fetchCategories();
+    }, []);
+
     return (
         <StateContext.Provider
             value={{
@@ -29,6 +48,8 @@ export const ContextProvider = ({ children }) => {
                 setCurrentUser,
                 userToken,
                 setUserToken,
+                categories,
+                fetchCategories,
             }}
         >
             {children}
