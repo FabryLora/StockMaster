@@ -36,7 +36,7 @@ export default function AddProductItem() {
     const [categoryPlaceholder, setCategoryPlaceholder] = useState(
         "Elegir categoria..."
     );
-    const { categories, fetchCategories } = useStateContext();
+    const { categories, fetchCategories, fetchProducts } = useStateContext();
 
     /* useEffect(() => {
         axiosClient.get("/category").then(({ data }) => {
@@ -101,6 +101,7 @@ export default function AddProductItem() {
                     setError(messagesArray);
                 }
             });
+        fetchProducts();
     };
 
     useEffect(() => {
@@ -122,7 +123,7 @@ export default function AddProductItem() {
     };
 
     return (
-        <div className="flex flex-col justify-center items-center gap-3 self-start">
+        <div className="flex flex-col justify-center items-center gap-3 w-full">
             <AnimatePresence>
                 {succ && (
                     <motion.div
@@ -148,22 +149,27 @@ export default function AddProductItem() {
                     ></motion.div>
                 )}
             </AnimatePresence>
-            <button
+            <motion.button
+                whileTap={{ scale: 0.9 }}
                 onClick={() => {
                     setIsOpen(!isOpen);
                     setBlackScreen(!blackScreen);
                 }}
-                className="border p-4 rounded-md h-20 text-4xl aspect-square flex justify-center items-center"
+                className="group bg-gray-800/50 hover:bg-gray-800 p-4 rounded-xl h-24 aspect-square flex justify-center items-center transition-colors"
             >
-                <FontAwesomeIcon icon={faPlus} size="xl" />
-            </button>
+                <FontAwesomeIcon
+                    icon={faPlus}
+                    size="2xl"
+                    className="text-gray-400 group-hover:text-white transition-colors"
+                />
+            </motion.button>
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
                         initial={{ scale: 0, x: "-50%", y: "-50%" }}
                         animate={{ scale: 1 }}
                         exit={{ scale: 0 }}
-                        className="py-2 px-4 w-[35rem] h-[80%] max-h-screen sm:max-w-[90%] md:max-w-[80%] lg:max-w-[60%] rounded-md absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col gap-5 bg-[#292f33] z-20 overflow-y-auto"
+                        className="p-6 w-[35rem] h-[95%] max-h-screen sm:max-w-[90%] md:max-w-[80%] lg:max-w-[60%] rounded-2xl absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col gap-6 bg-gray-800 z-20 overflow-y-auto"
                     >
                         <button
                             onClick={() => {
@@ -171,330 +177,366 @@ export default function AddProductItem() {
                                 setBlackScreen(!blackScreen);
                                 setError(false);
                             }}
-                            className="absolute right-5 top-5 border border-red-500 rounded-md w-7 h-7"
+                            className="absolute right-6 top-6 p-2 hover:bg-red-500/10 rounded-lg transition-colors"
                         >
                             <FontAwesomeIcon
                                 icon={faX}
-                                style={{ color: "#ef4444" }}
+                                className="text-red-500"
                             />
                         </button>
 
                         {error && (
-                            <div className="bg-red-500 text-white py-2 px-3 rounded-md text-sm sm:text-base">
+                            <div className="bg-red-500/10 border border-red-500 text-red-500 py-3 px-4 rounded-lg text-sm">
                                 {error.map((error, index) => (
                                     <p key={index}>{error}</p>
                                 ))}
                             </div>
                         )}
 
-                        {addCategory && (
-                            <div className="absolute right-3 bottom-32 z-30">
-                                <form
-                                    action=""
-                                    method="post"
-                                    className="bg-gray-600 p-2 rounded-md text-base flex justify-center flex-col gap-2"
-                                    onSubmit={onSubmitCategory}
-                                >
-                                    <input
-                                        className="border p-2 rounded-md text-black"
-                                        placeholder="Nombre de la Categoria..."
-                                        type="text"
-                                        id="category"
-                                        name="category"
-                                        value={categoriese.category_name}
-                                        onChange={(ev) =>
-                                            setCategoriese({
-                                                ...categoriese,
-                                                category_name: ev.target.value,
-                                            })
-                                        }
-                                    />
-                                    <input
-                                        className="p-2 border rounded-md cursor-pointer"
-                                        type="submit"
-                                        value="Agregar"
-                                    />
-                                </form>
-                            </div>
-                        )}
-
                         <form
-                            className="flex flex-col gap-5"
-                            action=""
-                            method="post"
+                            className="flex flex-col gap-6"
                             onSubmit={onSubmit}
                         >
-                            <div className="flex flex-col sm:flex-row justify-evenly gap-2 items-center border-b-2 pb-6">
-                                <div className="w-fit">
+                            <div className="flex flex-col sm:flex-row justify-center gap-4 items-center border-b border-gray-700 pb-6">
+                                <div className="relative group">
                                     {products.image_url ? (
                                         <img
-                                            className="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-md"
+                                            className="w-32 h-32 object-cover rounded-xl"
                                             src={products.image_url}
                                             alt=""
                                         />
                                     ) : (
-                                        <div className="border rounded-md w-24 h-24 sm:w-32 sm:h-32 flex items-center justify-center">
+                                        <div className="w-32 h-32 bg-gray-700/50 rounded-xl flex items-center justify-center">
                                             <FontAwesomeIcon
                                                 size="2xl"
                                                 icon={faImage}
+                                                className="text-gray-500"
                                             />
                                         </div>
                                     )}
-                                </div>
-                                <button className="relative border rounded-md p-1 cursor-pointer text-sm sm:text-base">
-                                    <input
-                                        className="absolute left-0 top-0 right-0 bottom-0 opacity-0"
-                                        type="file"
-                                        onChange={onImageChange}
-                                    />
-                                    Cambiar imagen
-                                </button>
-                            </div>
-
-                            <label htmlFor="name">Nombre:</label>
-                            <input
-                                className="bg-transparent border rounded-md p-1 text-sm sm:text-base"
-                                type="text"
-                                name="name"
-                                id="name"
-                                value={products.name}
-                                onChange={(ev) =>
-                                    setProducts({
-                                        ...products,
-                                        name: ev.target.value,
-                                    })
-                                }
-                            />
-
-                            <label htmlFor="description">Descripcion:</label>
-                            <textarea
-                                className="rounded-md text-white p-1 focus:outline-none bg-transparent border text-sm sm:text-base"
-                                name="description"
-                                onChange={(ev) =>
-                                    setProducts({
-                                        ...products,
-                                        description: ev.target.value,
-                                    })
-                                }
-                                value={products.description}
-                                id="description"
-                            ></textarea>
-
-                            <h2>Elegir la categoria del producto:</h2>
-                            <div className="relative flex flex-row gap-2">
-                                <div
-                                    onClick={() => {
-                                        setCategoryOpen(!categoryOpen);
-                                        fetchCategories();
-                                    }}
-                                    className="flex w-[93%] flex-row justify-between items-center px-2 cursor-pointer text-white border rounded-md p-2 text-sm sm:text-base"
-                                >
-                                    <span className="opacity-50">
-                                        {categoryPlaceholder}
-                                    </span>
-                                    <MotionFontAwesomeIcon
-                                        animate={{
-                                            rotateZ: categoryOpen ? 180 : 0,
-                                        }}
-                                        transition={{
-                                            type: spring,
-                                            duration: 0.2,
-                                        }}
-                                        icon={faChevronUp}
-                                        style={{ color: "#ffffff" }}
-                                    />
-                                </div>
-                                <div className="relative h-full w-[7%] text-2xl border rounded-md">
-                                    <div
-                                        className="w-full h-full flex justify-center items-center cursor-pointer"
-                                        onClick={() =>
-                                            setAddCategory(!addCategory)
-                                        }
-                                    >
-                                        <FontAwesomeIcon
-                                            icon={faPlus}
-                                            style={{ color: "#ffffff" }}
+                                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 rounded-xl flex items-center justify-center transition-opacity">
+                                        <input
+                                            className="absolute inset-0 opacity-0 cursor-pointer"
+                                            type="file"
+                                            onChange={onImageChange}
                                         />
+                                        <span className="text-white text-sm">
+                                            Cambiar imagen
+                                        </span>
                                     </div>
                                 </div>
-                                <AnimatePresence>
-                                    {categoryOpen && (
-                                        <motion.div
-                                            initial={{ opacity: 0, y: -20 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            exit={{ opacity: 0, y: -5 }}
-                                            className="absolute bg-gray-600 text-white flex flex-col gap-2 w-[92%] top-12 rounded-md h-fit p-2 max-h-52 overflow-y-auto z-20"
-                                        >
-                                            {categories.map((cate) => (
-                                                <div
-                                                    onClick={() => {
-                                                        setProducts({
-                                                            ...products,
-                                                            type: cate.category_name,
-                                                        });
-                                                        setCategoryPlaceholder(
-                                                            cate.category_name
-                                                        );
-                                                        setCategoryOpen(false);
+                            </div>
+
+                            <div className="space-y-4">
+                                <div className="space-y-2">
+                                    <label
+                                        htmlFor="name"
+                                        className="text-sm text-gray-400"
+                                    >
+                                        Nombre
+                                    </label>
+                                    <input
+                                        className="w-full bg-gray-700/50 border-0 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500"
+                                        type="text"
+                                        name="name"
+                                        id="name"
+                                        value={products.name}
+                                        onChange={(ev) =>
+                                            setProducts({
+                                                ...products,
+                                                name: ev.target.value,
+                                            })
+                                        }
+                                        placeholder="Nombre del producto"
+                                    />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label
+                                        htmlFor="description"
+                                        className="text-sm text-gray-400"
+                                    >
+                                        Descripción
+                                    </label>
+                                    <textarea
+                                        className="w-full bg-gray-700/50 border-0 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 min-h-[100px]"
+                                        name="description"
+                                        id="description"
+                                        value={products.description}
+                                        onChange={(ev) =>
+                                            setProducts({
+                                                ...products,
+                                                description: ev.target.value,
+                                            })
+                                        }
+                                        placeholder="Descripción del producto"
+                                    ></textarea>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-sm text-gray-400">
+                                        Categoría
+                                    </label>
+                                    <div className="relative flex gap-2">
+                                        <div className="relative flex-1">
+                                            <div
+                                                onClick={() => {
+                                                    setCategoryOpen(
+                                                        !categoryOpen
+                                                    );
+                                                    fetchCategories();
+                                                }}
+                                                className="flex-1 bg-gray-700/50 px-4 py-2.5 rounded-lg cursor-pointer flex items-center justify-between hover:bg-gray-700 transition-colors"
+                                            >
+                                                <span className="text-gray-400">
+                                                    {categoryPlaceholder}
+                                                </span>
+                                                <MotionFontAwesomeIcon
+                                                    animate={{
+                                                        rotateZ: categoryOpen
+                                                            ? 180
+                                                            : 0,
                                                     }}
-                                                    className="flex flex-row justify-between border p-2 rounded-md cursor-pointer"
-                                                    key={cate.id}
-                                                >
-                                                    <h3>
-                                                        {cate.category_name}
-                                                    </h3>
-                                                    <div
-                                                        onClick={() => {
-                                                            onDeleteClick(
-                                                                cate.id
-                                                            );
-                                                            fetchCategories();
-                                                            setCategoryPlaceholder(
-                                                                "Elegir categoria..."
-                                                            );
+                                                    transition={{
+                                                        type: spring,
+                                                        duration: 0.2,
+                                                    }}
+                                                    icon={faChevronUp}
+                                                    className="text-gray-400"
+                                                />
+                                            </div>
+
+                                            <AnimatePresence>
+                                                {categoryOpen && (
+                                                    <motion.div
+                                                        initial={{
+                                                            opacity: 0,
+                                                            y: -10,
                                                         }}
+                                                        animate={{
+                                                            opacity: 1,
+                                                            y: 0,
+                                                        }}
+                                                        exit={{
+                                                            opacity: 0,
+                                                            y: -10,
+                                                        }}
+                                                        className="absolute z-50 w-full mt-2 bg-gray-800 rounded-lg shadow-lg border border-gray-700 py-1"
                                                     >
-                                                        <FontAwesomeIcon
-                                                            icon={faTrashCan}
-                                                            style={{
-                                                                color: "#ef4444",
-                                                            }}
-                                                        />
-                                                    </div>
+                                                        {categories.map(
+                                                            (category) => (
+                                                                <div
+                                                                    key={
+                                                                        category.id
+                                                                    }
+                                                                    className="flex justify-between px-4 py-2 text-gray-400 hover:bg-gray-700/50 cursor-pointer transition-colors"
+                                                                >
+                                                                    <div
+                                                                        className="w-[95%]"
+                                                                        onClick={() => {
+                                                                            setProducts(
+                                                                                {
+                                                                                    ...products,
+                                                                                    type: category.category_name,
+                                                                                }
+                                                                            );
+                                                                            setCategoryPlaceholder(
+                                                                                category.category_name
+                                                                            );
+                                                                            setCategoryOpen(
+                                                                                false
+                                                                            );
+                                                                        }}
+                                                                    >
+                                                                        {
+                                                                            category.category_name
+                                                                        }
+                                                                    </div>
+
+                                                                    <div
+                                                                        className="w-[5%]"
+                                                                        onClick={() => {
+                                                                            onDeleteClick(
+                                                                                category.id
+                                                                            );
+                                                                            setCategoryPlaceholder(
+                                                                                "Elegir categoria..."
+                                                                            );
+                                                                            fetchCategories();
+                                                                        }}
+                                                                    >
+                                                                        <FontAwesomeIcon
+                                                                            icon={
+                                                                                faTrashCan
+                                                                            }
+                                                                            className="text-red-500"
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                            )
+                                                        )}
+                                                    </motion.div>
+                                                )}
+                                            </AnimatePresence>
+                                        </div>
+
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                setAddCategory(!addCategory)
+                                            }
+                                            className="p-2.5 bg-gray-700/50 rounded-lg hover:bg-gray-700 transition-colors"
+                                        >
+                                            <FontAwesomeIcon
+                                                icon={faPlus}
+                                                className="text-gray-400"
+                                            />
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <AnimatePresence>
+                                    {addCategory && (
+                                        <motion.div
+                                            initial={{ opacity: 0, y: -10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: -10 }}
+                                            className="absolute z-50 right-0 mt-2 w-64 bg-gray-800 rounded-lg shadow-lg border border-gray-700 p-4"
+                                        >
+                                            <form
+                                                onSubmit={onSubmitCategory}
+                                                className="space-y-4"
+                                            >
+                                                <div className="space-y-2">
+                                                    <label className="text-sm text-gray-400">
+                                                        Nueva Categoría
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        value={
+                                                            categoriese.category_name
+                                                        }
+                                                        onChange={(e) => {
+                                                            e.preventDefault();
+                                                            setCategoriese({
+                                                                ...categoriese,
+                                                                category_name:
+                                                                    e.target
+                                                                        .value,
+                                                            });
+                                                        }}
+                                                        className="w-full bg-gray-700/50 border-0 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500"
+                                                        placeholder="Nombre de la categoría"
+                                                    />
                                                 </div>
-                                            ))}
+                                                <div className="flex justify-end">
+                                                    <motion.button
+                                                        onClick={
+                                                            onSubmitCategory
+                                                        }
+                                                        whileHover={{
+                                                            scale: 1.02,
+                                                        }}
+                                                        whileTap={{
+                                                            scale: 0.98,
+                                                        }}
+                                                        className="px-4 py-2 bg-blue-500 text-white rounded-lg text-sm hover:bg-blue-600 transition-colors"
+                                                    >
+                                                        Agregar
+                                                    </motion.button>
+                                                </div>
+                                            </form>
                                         </motion.div>
                                     )}
                                 </AnimatePresence>
+
+                                <div className="space-y-4">
+                                    <label className="text-sm text-gray-400">
+                                        Unidad de almacenamiento
+                                    </label>
+                                    <div className="grid grid-cols-3 gap-3">
+                                        {["Unidad", "Metro", "Centimetro"].map(
+                                            (unit) => (
+                                                <button
+                                                    key={unit}
+                                                    type="button"
+                                                    onClick={() =>
+                                                        setProducts({
+                                                            ...products,
+                                                            ustock: unit.toLowerCase(),
+                                                        })
+                                                    }
+                                                    className={`px-4 py-2.5 rounded-lg text-sm transition-colors ${
+                                                        products.ustock ===
+                                                        unit.toLowerCase()
+                                                            ? "bg-blue-500 text-white"
+                                                            : "bg-gray-700/50 text-gray-400 hover:bg-gray-700"
+                                                    }`}
+                                                >
+                                                    {unit}
+                                                </button>
+                                            )
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <label
+                                            htmlFor="stock"
+                                            className="text-sm text-gray-400"
+                                        >
+                                            Cantidad
+                                        </label>
+                                        <input
+                                            className="w-full bg-gray-700/50 border-0 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500"
+                                            type="number"
+                                            name="stock"
+                                            id="stock"
+                                            value={products.stock}
+                                            onChange={(ev) =>
+                                                setProducts({
+                                                    ...products,
+                                                    stock: ev.target.value,
+                                                })
+                                            }
+                                            placeholder="0"
+                                        />
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label
+                                            htmlFor="price"
+                                            className="text-sm text-gray-400"
+                                        >
+                                            Precio
+                                        </label>
+                                        <input
+                                            className="w-full bg-gray-700/50 border-0 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500"
+                                            type="number"
+                                            name="price"
+                                            id="price"
+                                            value={products.price}
+                                            onChange={(ev) =>
+                                                setProducts({
+                                                    ...products,
+                                                    price: ev.target.value,
+                                                })
+                                            }
+                                            placeholder="0.00"
+                                        />
+                                    </div>
+                                </div>
                             </div>
 
-                            {/* <label htmlFor="tipos">
-                                Elegir el tipo de producto:
-                            </label>
-                            <select
-                                className="bg-transparent text-white border rounded-md p-1 text-sm sm:text-base"
-                                name="tipos"
-                                id="tipos"
-                                onChange={(ev) =>
-                                    setProducts({
-                                        ...products,
-                                        type: ev.target.value,
-                                    })
-                                }
-                                value={products.type}
-                            >
-                                <option value="" disabled>
-                                    Seleccionar tipo
-                                </option>
-                                <option value="telas">Telas</option>
-                            </select> */}
-
-                            <h2 className="text-lg">
-                                Elegir unidad de almacenamiento:
-                            </h2>
-                            <div className="flex flex-row items-center justify-evenly w-full gap-3">
-                                <label className="flex items-center justify-center border px-10 py-5 rounded cursor-pointer border-specialblue">
-                                    <input
-                                        className="hidden"
-                                        type="radio"
-                                        name="discount"
-                                        value="5"
-                                    />
-                                    <span
-                                        onClick={() =>
-                                            setProducts({
-                                                ...products,
-                                                ustock: "unidad",
-                                            })
-                                        }
-                                        className="absolute px-4 py-2 flex items-center justify-center rounded-md"
-                                    >
-                                        Unidad
-                                    </span>
-                                </label>
-                                <label className="flex items-center justify-center border px-10 py-5 rounded cursor-pointer border-specialblue">
-                                    <input
-                                        className="hidden"
-                                        type="radio"
-                                        name="discount"
-                                        value="10"
-                                    />
-                                    <span
-                                        onClick={() =>
-                                            setProducts({
-                                                ...products,
-                                                ustock: "metro",
-                                            })
-                                        }
-                                        className="absolute px-4 py-2 flex items-center justify-center  rounded-md"
-                                    >
-                                        Metro
-                                    </span>
-                                </label>
-                                <label className="relative flex items-center justify-center border px-10 py-5 rounded cursor-pointer border-specialblue">
-                                    <input
-                                        className="hidden"
-                                        type="radio"
-                                        name="discount"
-                                        value="20"
-                                    />
-                                    <span
-                                        onClick={() =>
-                                            setProducts({
-                                                ...products,
-                                                ustock: "centimetro",
-                                            })
-                                        }
-                                        className="absolute px-4 py-2 flex items-center justify-center  rounded-md"
-                                    >
-                                        Centimetro
-                                    </span>
-                                </label>
-                            </div>
-                            <label htmlFor="stock">Cantidad:</label>
-                            <input
-                                className="text-white pl-2 bg-transparent border rounded-md text-sm sm:text-base"
-                                type="number"
-                                name="stock"
-                                id="stock"
-                                onChange={(ev) =>
-                                    setProducts({
-                                        ...products,
-                                        stock: ev.target.value,
-                                    })
-                                }
-                                value={products.stock}
-                            />
-
-                            <div className="flex flex-wrap gap-2 items-center">
-                                <label htmlFor="price">
-                                    Precio del producto:
-                                </label>
-                                <input
-                                    className="text-white pl-2 bg-transparent border rounded-md text-sm sm:text-base"
-                                    type="number"
-                                    name="price"
-                                    id="price"
-                                    value={products.price}
-                                    onChange={(ev) =>
-                                        setProducts({
-                                            ...products,
-                                            price: ev.target.value,
-                                        })
-                                    }
-                                />
-                            </div>
-
-                            <motion.input
-                                whileHover={{
-                                    transition: { duration: 0.2 },
-                                    backgroundColor: "#ffffff",
-                                    color: "#000000",
-                                }}
-                                className="border rounded-md p-1 cursor-pointer text-sm sm:text-base"
+                            <motion.button
                                 type="submit"
-                                value="Cargar producto"
-                            />
+                                whileHover={{ scale: 1.01 }}
+                                whileTap={{ scale: 0.99 }}
+                                className="mt-6 w-full bg-blue-500 text-white py-3 rounded-lg font-medium hover:bg-blue-600 transition-colors"
+                            >
+                                Cargar producto
+                            </motion.button>
                         </form>
                     </motion.div>
                 )}

@@ -8,7 +8,9 @@ export default function Days({ currentDay, currentMonth, currentYear, sales }) {
     const filteredArray = sales.filter(
         (sale) =>
             sale.created_at.slice(0, 10) ===
-            `${currentYear}-${currentMonth}-${currentDay}`
+            `${currentYear}-${String(currentMonth).padStart(2, "0")}-${String(
+                currentDay
+            ).padStart(2, "0")}`
     );
 
     let pricesArray = filteredArray.map((sale) => {
@@ -21,49 +23,67 @@ export default function Days({ currentDay, currentMonth, currentYear, sales }) {
     });
 
     return (
-        <div>
+        <div className="relative">
             <button
                 onClick={() => setIsActive(!isActive)}
                 className={
                     isActive
-                        ? " flex flex-col rounded-md border justify-start items-start px-3 py-1 text-white text-xl absolute top-0 left-0 w-full h-full bg-[#292f33] z-10"
-                        : "relative flex w-32 h-32 rounded-md border justify-start items-start px-3 py-1 text-white text-xl"
+                        ? "fixed inset-0 w-full h-full bg-gray-800 z-50 p-6 overflow-auto"
+                        : "relative w-full aspect-square bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors p-4 flex flex-col"
                 }
             >
-                {filteredArray.length != 0 && isActive == false && (
-                    <div className="absolute top-1/2 left-1/2 animate -translate-x-1/2 -translate-y-1/2">
-                        <FontAwesomeIcon
-                            icon={faExclamation}
-                            size="3x"
-                            style={{ color: "#ffffff" }}
-                        />
+                {filteredArray.length > 0 && !isActive && (
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-yellow-500 animate-pulse">
+                        <FontAwesomeIcon icon={faExclamation} size="2x" />
                     </div>
                 )}
-                <h2 className={isActive ? "text-2xl" : ""}>{currentDay}</h2>
+                <h2
+                    className={`
+                    ${isActive ? "text-3xl mb-6" : "text-xl"} 
+                    font-bold text-gray-100
+                `}
+                >
+                    {currentDay}
+                </h2>
                 {isActive && (
-                    <>
-                        <div className="flex flex-col justify-start gap-3 overflow-scroll w-full p-3">
+                    <div className="flex flex-col gap-4 w-full max-w-2xl mx-auto">
+                        <div className="flex flex-col gap-3 overflow-auto max-h-[70vh]">
                             {filteredArray.map((sale) => (
                                 <div
-                                    className="flex flex-row border rounded-md p-2 justify-between"
                                     key={sale.id}
+                                    className="flex items-center justify-between bg-gray-700 rounded-lg p-4 hover:bg-gray-600 transition-colors"
                                 >
-                                    <div className="flex flex-row gap-2">
-                                        <h2>{sale.product_name}</h2>
-                                        <p className="text-[#6b7280]">
+                                    <div className="flex items-center gap-3">
+                                        <h3 className="text-gray-100 font-medium">
+                                            {sale.product_name}
+                                        </h3>
+                                        <span className="text-gray-400 text-sm">
                                             x{sale.amount_sold}
-                                        </p>
+                                        </span>
                                     </div>
-                                    <h2>${sale.final_price}</h2>
+                                    <span className="text-green-400 font-semibold">
+                                        ${sale.final_price}
+                                    </span>
                                 </div>
                             ))}
                         </div>
-                        {filteredArray.length != 0 && (
-                            <h2 className="self-center pb-3">
-                                Total del dia: ${total}
-                            </h2>
+                        {filteredArray.length > 0 && (
+                            <div className="border-t border-gray-600 pt-4 mt-4">
+                                <h2 className="text-xl text-gray-100 text-center">
+                                    Total del día:{" "}
+                                    <span className="text-green-400 font-bold">
+                                        ${total}
+                                    </span>
+                                </h2>
+                            </div>
                         )}
-                    </>
+                        <button
+                            onClick={() => setIsActive(false)}
+                            className="absolute top-4 right-4 text-gray-400 hover:text-gray-100 transition-colors"
+                        >
+                            ✕
+                        </button>
+                    </div>
                 )}
             </button>
         </div>

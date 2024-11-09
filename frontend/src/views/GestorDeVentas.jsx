@@ -26,7 +26,7 @@ export default function GestorDeVentas() {
     const currentYear = new Date().getFullYear();
     const [sales, setSales] = useState([]);
     const [year, setYear] = useState(currentYear);
-    const [month, setMoth] = useState(currentMonth);
+    const [month, setMonth] = useState(currentMonth);
     const [days, setDays] = useState([]);
     const [monthTotal, setMonthTotal] = useState(0);
 
@@ -52,10 +52,6 @@ export default function GestorDeVentas() {
                 new Date(sale.created_at).getFullYear() === year
         );
 
-        sales.forEach((sale) => {
-            console.log(new Date(sale.created_at).getMonth() === month);
-        });
-
         const totalRaw = filteredArrayByMonth.map((sale) => {
             return sale.final_price;
         });
@@ -70,68 +66,97 @@ export default function GestorDeVentas() {
     }, [month, year, sales]);
 
     return (
-        <div className="flex flex-col gap-10 items-center">
-            <div className="w-full text-center text-5xl pt-5 text-white flex flex-col gap-10">
-                <div className="flex flex-row justify-between px-10">
-                    <button
-                        onClick={() => {
-                            setYear(year - 1);
-                        }}
-                    >
-                        <FontAwesomeIcon
-                            icon={faChevronLeft}
-                            style={{ color: "#ffffff" }}
-                        />
-                    </button>
+        <div className="min-h-screen bg-gray-900 p-6">
+            <div className="max-w-7xl mx-auto space-y-8">
+                {/* Header con año y mes */}
+                <div className="bg-gray-800 rounded-lg p-6 shadow-lg">
+                    <div className="space-y-6">
+                        {/* Selector de año */}
+                        <div className="flex items-center justify-between">
+                            <button
+                                onClick={() => setYear(year - 1)}
+                                className="p-2 hover:bg-gray-700 rounded-full transition-colors"
+                            >
+                                <FontAwesomeIcon
+                                    icon={faChevronLeft}
+                                    className="text-gray-300 text-xl"
+                                />
+                            </button>
+                            <h2 className="text-4xl font-bold text-gray-100">
+                                {year}
+                            </h2>
+                            <button
+                                onClick={() => setYear(year + 1)}
+                                className="p-2 hover:bg-gray-700 rounded-full transition-colors"
+                            >
+                                <FontAwesomeIcon
+                                    icon={faChevronRight}
+                                    className="text-gray-300 text-xl"
+                                />
+                            </button>
+                        </div>
 
-                    <h2>{year}</h2>
-                    <button onClick={() => setYear(year + 1)}>
-                        <FontAwesomeIcon
-                            icon={faChevronRight}
-                            size=""
-                            style={{ color: "#ffffff" }}
-                        />
-                    </button>
+                        {/* Selector de mes */}
+                        <div className="flex items-center justify-between">
+                            <button
+                                onClick={() =>
+                                    setMonth(
+                                        month != 0 ? month - 1 : month + 11
+                                    )
+                                }
+                                className="p-2 hover:bg-gray-700 rounded-full transition-colors"
+                            >
+                                <FontAwesomeIcon
+                                    icon={faChevronLeft}
+                                    className="text-gray-300 text-xl"
+                                />
+                            </button>
+                            <h2 className="text-4xl font-bold text-gray-100">
+                                {months[month]}
+                            </h2>
+                            <button
+                                onClick={() =>
+                                    setMonth(
+                                        month != 11 ? month + 1 : month - 11
+                                    )
+                                }
+                                className="p-2 hover:bg-gray-700 rounded-full transition-colors"
+                            >
+                                <FontAwesomeIcon
+                                    icon={faChevronRight}
+                                    className="text-gray-300 text-xl"
+                                />
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div className="flex flex-row justify-between px-10">
-                    <button
-                        onClick={() => {
-                            setMoth(month != 0 ? month - 1 : month + 11);
-                        }}
-                    >
-                        <FontAwesomeIcon
-                            icon={faChevronLeft}
-                            style={{ color: "#ffffff" }}
-                        />
-                    </button>
 
-                    <h2>{months[month]}</h2>
-                    <button
-                        onClick={() =>
-                            setMoth(month != 11 ? month + 1 : month - 11)
-                        }
-                    >
-                        <FontAwesomeIcon
-                            icon={faChevronRight}
-                            size=""
-                            style={{ color: "#ffffff" }}
-                        />
-                    </button>
+                {/* Grid de días */}
+                <div className="bg-gray-800 rounded-lg p-6 shadow-lg">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4">
+                        {days.map((day) => (
+                            <Days
+                                key={day}
+                                currentDay={day}
+                                currentMonth={month + 1}
+                                currentYear={year}
+                                sales={sales}
+                            />
+                        ))}
+                    </div>
                 </div>
-            </div>
-            <div className="w-[95%] flex flex-row flex-wrap gap-6 relative items-center">
-                {days.map((day) => (
-                    <Days
-                        key={day}
-                        currentDay={day}
-                        currentMonth={month + 1}
-                        currentYear={year}
-                        sales={sales}
-                    />
-                ))}
-            </div>
-            <div className="text-white text-5xl self-end pr-10">
-                Total del mes: ${monthTotal}
+
+                {/* Total del mes */}
+                <div className="bg-gray-800 rounded-lg p-6 shadow-lg">
+                    <div className="flex justify-between items-center">
+                        <span className="text-gray-400 text-xl">
+                            Total del mes:
+                        </span>
+                        <span className="text-4xl font-bold text-green-500">
+                            ${monthTotal}
+                        </span>
+                    </div>
+                </div>
             </div>
         </div>
     );

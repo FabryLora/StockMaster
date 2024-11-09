@@ -5,9 +5,13 @@ const StateContext = createContext({
     currentUser: {},
     userToken: null,
     categories: [],
+    products: [],
+    loading: null,
     setCurrentUser: () => {},
     setUserToken: () => {},
     fetchCategories: () => {},
+    fetchProducts: () => {},
+    updateUserProfile: () => {},
 });
 
 export const ContextProvider = ({ children }) => {
@@ -16,6 +20,8 @@ export const ContextProvider = ({ children }) => {
         localStorage.getItem("TOKEN") || ""
     );
     const [categories, setCategories] = useState([]);
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     const setUserToken = (token) => {
         if (token) {
@@ -37,9 +43,32 @@ export const ContextProvider = ({ children }) => {
             });
     };
 
+    const fetchProducts = () => {
+        setLoading(true);
+        axiosClient
+            .get("/product")
+            .then((res) => {
+                setProducts(res.data.data);
+                setLoading(false);
+            })
+            .catch((error) => {
+                console.error("Error fetchong products", error);
+            });
+    };
+
+    const updateUserProfile = (userData) => {
+        return axiosClient.put("/user/update", userData).then(({ data }) => {
+            setCurrentUser(data);
+            return data;
+        });
+    };
+
     useEffect(() => {
-        fetchCategories();
-    }, []);
+        if (userToken) {
+            fetchCategories();
+            fetchProducts();
+        }
+    }, [userToken]);
 
     return (
         <StateContext.Provider
@@ -50,6 +79,10 @@ export const ContextProvider = ({ children }) => {
                 setUserToken,
                 categories,
                 fetchCategories,
+                products,
+                fetchProducts,
+                loading,
+                updateUserProfile,
             }}
         >
             {children}

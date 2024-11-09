@@ -1,10 +1,12 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import DefaultLayout from "./components/DefaultLayout.jsx";
 import GuestLayout from "./components/GuestLayout.jsx";
+import Contact from "./views/Contact.jsx";
 import GestorDeVentas from "./views/GestorDeVentas.jsx";
 import HomePage from "./views/HomePage.jsx";
 import Login from "./views/Login.jsx";
 import Productos from "./views/Productos.jsx";
+import Profile from "./views/Profile.jsx";
 import Signup from "./views/Signup.jsx";
 import Ventas from "./views/Ventas.jsx";
 
@@ -28,6 +30,14 @@ const router = createBrowserRouter([
             {
                 path: "/gestordeventas",
                 element: <GestorDeVentas />,
+            },
+            {
+                path: "/profile",
+                element: <Profile />,
+            },
+            {
+                path: "/contact",
+                element: <Contact />,
             },
         ],
     },

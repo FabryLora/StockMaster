@@ -14,7 +14,6 @@ export default function DefaultLayout() {
     const links = [
         { to: "/productos", title: "Productos" },
         { to: "/ventas", title: "Ventas" },
-        { to: "#", title: "Gestor de productos" },
         { to: "/gestordeventas", title: "Gestor de ventas" },
     ];
 
@@ -48,8 +47,8 @@ export default function DefaultLayout() {
     }
     return (
         <>
-            <header className="text-white font-gothic text-lg">
-                <nav className="flex flex-row justify-items-center items-center shadow-sm shadow-specialblue gap-5 max-md:justify-between max-md:pl-3 max-md:py-1">
+            <header className="text-white font-gothic text-lg bg-defaultbg">
+                <nav className="flex flex-row justify-items-center items-center shadow-lg shadow-specialblue/20 gap-5 max-md:justify-between max-md:pl-3 max-md:py-2 px-4">
                     <button
                         onClick={() => setTinyMenu(!tinyMenu)}
                         className="md:hidden"
@@ -82,17 +81,17 @@ export default function DefaultLayout() {
                                             duration: 0.2,
                                         }}
                                         exit={{ scaleX: 0 }}
-                                        className="flex flex-col h-full w-72 bg-defaultbg p-2 px-3"
+                                        className="flex flex-col h-full w-72 bg-defaultbg p-4 px-5 shadow-xl"
                                     >
                                         <button
-                                            className="self-end border text-2xl border-red-500 rounded-md text-red-500 flex items-center justify-center w-8 h-8 p-1"
+                                            className="self-end border-2 text-xl border-red-500 rounded-full text-red-500 flex items-center justify-center w-8 h-8 hover:bg-red-500 hover:text-white transition-colors"
                                             onClick={() =>
                                                 setTinyMenu(!tinyMenu)
                                             }
                                         >
                                             x
                                         </button>
-                                        <ul className="w-full flex flex-col gap-4 py-2 text-base text-[#9FADBC]">
+                                        <ul className="w-full flex flex-col gap-4 py-4 text-base text-[#9FADBC]">
                                             {links.map((link) => (
                                                 <MotionLink
                                                     to={link.to}
@@ -124,12 +123,12 @@ export default function DefaultLayout() {
                             alt="logo"
                         />
                     </Link>
-                    <ul className="w-full flex flex-row gap-4 py-2 text-base text-[#9FADBC] max-md:hidden">
+                    <ul className="w-full flex flex-row gap-6 py-2 text-base text-[#9FADBC] max-md:hidden">
                         {links.map((link) => (
                             <MotionLink
                                 to={link.to}
                                 key={link.title}
-                                className="py-1 px-3 rounded-md"
+                                className="py-2 px-4 rounded-md hover:text-white transition-colors"
                                 whileHover={{ backgroundColor: "#2b2f37" }}
                             >
                                 {link.title}
@@ -157,20 +156,42 @@ export default function DefaultLayout() {
                                     initial={{ y: -20, opacity: 0 }}
                                     animate={{ y: 10, opacity: 1 }}
                                     exit={{ y: -20, opacity: 0 }}
-                                    className="bg-[#292f33] rounded-md p-4 w-fit absolute right-3 overflow-hidden flex flex-col gap-2 z-10"
+                                    className="bg-[#292f33] rounded-lg p-5 w-fit absolute right-3 overflow-hidden flex flex-col gap-3 z-10 shadow-xl border border-gray-700"
                                 >
-                                    <div className="text-base">
-                                        <p>{currentUser.name}</p>
-                                        <p>{currentUser.email}</p>
+                                    <div className="text-base border-b border-gray-700 pb-3">
+                                        <p className="font-semibold">
+                                            {currentUser.name}
+                                        </p>
+                                        <p className="text-gray-400 text-sm">
+                                            {currentUser.email}
+                                        </p>
                                     </div>
-                                    <motion.button
-                                        onClick={(ev) => logout(ev)}
-                                        className="rounded-md text-red-500 bg-defaultbg"
+                                    <MotionLink
+                                        to={"/profile"}
+                                        className="rounded-md text-specialblue flex justify-center items-center bg-defaultbg py-2 hover:bg-specialblue hover:text-white transition-colors"
                                         whileTap={{
-                                            scale: 0.9,
+                                            scale: 0.95,
                                         }}
                                     >
-                                        Cerrar Sesion
+                                        Editar perfil
+                                    </MotionLink>
+                                    <MotionLink
+                                        to={"/contact"}
+                                        className="rounded-md text-specialblue flex justify-center items-center bg-defaultbg py-2 hover:bg-specialblue hover:text-white transition-colors"
+                                        whileTap={{
+                                            scale: 0.95,
+                                        }}
+                                    >
+                                        Contacto
+                                    </MotionLink>
+                                    <motion.button
+                                        onClick={(ev) => logout(ev)}
+                                        className="rounded-md text-red-500 bg-defaultbg py-2 hover:bg-red-500 hover:text-white transition-colors"
+                                        whileTap={{
+                                            scale: 0.95,
+                                        }}
+                                    >
+                                        Cerrar Sesión
                                     </motion.button>
                                 </motion.div>
                             )}
@@ -178,9 +199,9 @@ export default function DefaultLayout() {
                     </div>
                 </nav>
             </header>
-            <div>
+            <main className="h-[calc(100vh-57px)] overflow-x-hidden bg-gray-100 dark:bg-gray-900">
                 <Outlet />
-            </div>
+            </main>
         </>
     );
 }

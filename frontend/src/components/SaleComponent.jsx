@@ -10,21 +10,23 @@ export default function SaleComponent({ sale }) {
     };
 
     return (
-        <div
-            key={sale.id}
-            className="flex flex-row w-[95%] p-3 border-2 border-[#017cc5] text-[#017cc5] font-bold h-12 rounded-md justify-between"
-        >
-            <div className="flex items-center gap-2">
-                <h3 className="text-lg">{sale.product_name}</h3>
-                <p className="text-[#6b7280] text-lg">x{sale.amount_sold}</p>
+        <div className="flex flex-row w-full p-4 bg-gray-800/30 border border-specialblue/20 text-white rounded-lg justify-between hover:bg-gray-800/50 transition-all group">
+            <div className="flex items-center gap-3">
+                <h3 className="text-lg font-medium">{sale.product_name}</h3>
+                <p className="text-gray-400 text-lg">x{sale.amount_sold}</p>
             </div>
-            <div className="flex flex-row items-center gap-3">
-                <h2 className="text-lg">${sale.final_price}</h2>
-                <button onClick={onDeleteClick}>
+            <div className="flex flex-row items-center gap-4">
+                <h2 className="text-lg font-bold text-specialblue">
+                    ${sale.final_price}
+                </h2>
+                <button
+                    onClick={onDeleteClick}
+                    className="opacity-50 hover:opacity-100 transition-opacity"
+                >
                     <FontAwesomeIcon
                         icon={faTrash}
-                        style={{ color: "#ef4444" }}
-                        size="xl"
+                        className="text-red-500 hover:text-red-400 transition-colors"
+                        size="lg"
                     />
                 </button>
             </div>

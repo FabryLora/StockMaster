@@ -1,4 +1,5 @@
 import {
+    faImage,
     faPenToSquare,
     faQuestion,
     faX,
@@ -7,6 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import axiosClient from "../axios";
+import { useStateContext } from "../contexts/ContextProvider";
 
 export default function ProductItem({ product }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -25,6 +27,8 @@ export default function ProductItem({ product }) {
         ustock: product.ustock,
         stock: product.stock,
     });
+
+    const { fetchProducts, categories } = useStateContext();
 
     useEffect(() => {
         if (succ) {
@@ -103,18 +107,11 @@ export default function ProductItem({ product }) {
                     setDeleteRes(true);
                 }
             });
+            fetchProducts();
         }
     };
 
-    const limitText = (texto, limite) => {
-        return texto.length > limite
-            ? texto.substring(0, limite) + ".."
-            : texto;
-    };
-
     useEffect(() => {
-        setIsOpen(false);
-        setBlackScreen(false);
         if (deleteRes) {
             const timer = setTimeout(() => {
                 setDeleteRes(false);
@@ -133,7 +130,7 @@ export default function ProductItem({ product }) {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            className="bg-green-500 text-white py-2 px-3 rounded-md absolute top-10 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30"
+                            className="bg-green-500 text-white py-2 px-3 rounded-md absolute top-10 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50"
                         >
                             Producto actualizado exitosamente
                         </motion.div>
@@ -155,8 +152,8 @@ export default function ProductItem({ product }) {
                             animate={{ opacity: 0.5 }}
                             exit={{ opacity: 0 }}
                             onClick={() => {
-                                setIsOpen(!isOpen);
-                                setBlackScreen(!blackScreen);
+                                setIsOpen(false);
+                                setBlackScreen(false);
                                 setError(false);
                             }}
                             className="absolute top-0 left-0 bg-black w-screen h-screen z-20"
@@ -164,233 +161,283 @@ export default function ProductItem({ product }) {
                     )}
                 </AnimatePresence>
                 <div className="flex flex-col justify-center items-center">
-                    <motion.button
-                        className="flex items-center justify-center flex-col h-20 bg-center aspect-square rounded-md bg-no-repeat bg-cover"
-                        style={{ backgroundImage: `url(${product.image_url})` }}
-                        whileTap={{ scale: 0.9 }}
-                        onClick={() => {
-                            setIsOpen(!isOpen);
-                            setBlackScreen(!blackScreen);
-                            setError(false);
-                        }}
-                    >
-                        {!product.image_url && (
-                            <div className="border w-full h-full flex items-center justify-center rounded-md">
-                                <FontAwesomeIcon icon={faQuestion} size="2xl" />
-                            </div>
-                        )}
-                    </motion.button>
-                    <h2>{limitText(product.name, 9)}</h2>
+                    <div className="group relative bg-gray-800/50 hover:bg-gray-800 rounded-xl p-4 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10">
+                        <motion.button
+                            className="w-[200px] h-[200px] rounded-xl overflow-hidden bg-gray-700/50"
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            onClick={() => {
+                                setIsOpen(!isOpen);
+                                setBlackScreen(!blackScreen);
+                            }}
+                        >
+                            {product.image_url ? (
+                                <img
+                                    src={product.image_url}
+                                    alt={product.name}
+                                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                />
+                            ) : (
+                                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-700/50 to-gray-800/50">
+                                    <FontAwesomeIcon
+                                        icon={faQuestion}
+                                        className="text-gray-400 text-3xl"
+                                    />
+                                </div>
+                            )}
+                        </motion.button>
+
+                        <div className="mt-4 space-y-2">
+                            <h2 className="text-lg font-medium text-white truncate">
+                                {product.name}
+                            </h2>
+                            <p className="text-sm font-semibold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+                                {product.price.toLocaleString("es-AR", {
+                                    style: "currency",
+                                    currency: "ARS",
+                                })}
+                            </p>
+                        </div>
+                    </div>
                 </div>
 
                 <AnimatePresence>
                     {isOpen && (
                         <motion.div
-                            initial={{ scale: 0, x: "-50%", y: "-50%" }}
-                            animate={{ scale: 1 }}
-                            exit={{ scale: 0 }}
-                            className="p-4 rounded-md absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col gap-4 bg-[#292f33] z-20 w-[575px] h-fit"
+                            className="fixed inset-0 z-40 flex items-center justify-center p-4 overflow-y-auto"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
                         >
-                            <button
-                                onClick={() => {
-                                    setIsOpen(!isOpen);
-                                    setBlackScreen(!blackScreen);
-                                    setError(false);
-                                }}
-                                className="border border-red-500 rounded-md w-7 h-7 self-end"
+                            <motion.div
+                                className="bg-gray-800 rounded-2xl w-full max-w-2xl overflow-hidden shadow-xl border border-gray-700 my-auto"
+                                initial={{ scale: 0.9, y: 20 }}
+                                animate={{ scale: 1, y: 0 }}
+                                exit={{ scale: 0.9, y: 20 }}
                             >
-                                <FontAwesomeIcon
-                                    icon={faX}
-                                    style={{ color: "#ef4444" }}
-                                />
-                            </button>
-                            {error && (
-                                <div className="bg-red-500 text-white py-2 px-3 rounded-md text-sm sm:text-base">
-                                    {error.map((error, index) => (
-                                        <p key={index}>{error}</p>
-                                    ))}
-                                </div>
-                            )}
-
-                            <div className="flex flex-col gap-3 items-center">
-                                <motion.div
-                                    className="rounded-md w-fit min-h-[287px] flex items-center"
-                                    whileHover={{
-                                        backgroundColor: "#000",
-                                        opacity: 0.5,
-                                    }}
-                                >
-                                    <button className="relative rounded-md p-1 cursor-default flex justify-center items-center">
-                                        <input
-                                            className="absolute w-full h-full left-0 top-0 right-0 bottom-0 opacity-0 z-10 cursor-pointer"
-                                            type="file"
-                                            onChange={onImageChange}
+                                <div className="flex justify-between items-center p-6 border-b border-gray-700">
+                                    <h3 className="text-xl font-semibold text-white">
+                                        Editar Producto
+                                    </h3>
+                                    <button
+                                        onClick={() => {
+                                            setIsOpen(false);
+                                            setBlackScreen(false);
+                                            setError(false);
+                                        }}
+                                        className="p-2 hover:bg-red-500/10 rounded-lg transition-colors"
+                                    >
+                                        <FontAwesomeIcon
+                                            icon={faX}
+                                            className="text-red-500"
                                         />
-                                        <motion.div className="absolute w-full h-full flex justify-center items-center">
-                                            <FontAwesomeAnimated
-                                                icon={faPenToSquare}
-                                                size="2xl"
-                                                color="#9FADBC"
-                                            />
-                                        </motion.div>
-                                        {product.image_url ? (
-                                            <img
-                                                src={productos.image_url}
-                                                className="rounded-md max-h-[280px]"
-                                            />
-                                        ) : (
-                                            <div className=" w-[200px] h-[280px] border rounded-md"></div>
-                                        )}
                                     </button>
-                                </motion.div>
-                                <div className="flex flex-col gap-1 w-full">
-                                    <div className="flex flex-row gap-2 items-center justify-between">
-                                        <h2 className="opacity-50">Nombre:</h2>
-                                        <input
-                                            className="bg-transparent p-2 rounded-md"
-                                            type="text"
-                                            name="name"
-                                            id="name"
-                                            value={productos.name}
-                                            placeholder={product.name}
-                                            onChange={(e) =>
-                                                setProductos({
-                                                    ...productos,
-                                                    name: e.target.value,
-                                                })
-                                            }
-                                        />
-                                        {/* <p className="font-bold text-lg">
-                                            {product.name}
-                                        </p> */}
-                                    </div>
+                                </div>
 
-                                    <div className="flex flex-row gap-2 items-center justify-between">
-                                        <h2 className="opacity-50">
-                                            Descipcion:
-                                        </h2>
-                                        <input
-                                            className="bg-transparent p-2 rounded-md"
-                                            type="text"
-                                            name="description"
-                                            id="description"
-                                            value={productos.description}
-                                            placeholder={
-                                                productos.description ||
-                                                "Agregar descripcion"
-                                            }
-                                            onChange={(e) =>
-                                                setProductos({
-                                                    ...productos,
-                                                    description: e.target.value,
-                                                })
-                                            }
-                                        />
-                                    </div>
+                                <div className="p-6 space-y-6">
+                                    {error && (
+                                        <div className="bg-red-500/10 border border-red-500 text-red-500 py-3 px-4 rounded-lg text-sm">
+                                            {error.map((error, index) => (
+                                                <p key={index}>{error}</p>
+                                            ))}
+                                        </div>
+                                    )}
 
-                                    <div className="flex flex-row gap-2 items-center justify-between">
-                                        <h2 className="opacity-50">
-                                            Categoria:
-                                        </h2>
-                                        <select
-                                            className="bg-transparent rounded-md p-2 w-[197px]"
-                                            name="type"
-                                            id="type"
-                                            onChange={(ev) =>
-                                                setProductos({
-                                                    ...productos,
-                                                    type: ev.target.value,
-                                                })
-                                            }
-                                            value={productos.type}
+                                    <div className="flex justify-center">
+                                        <motion.div
+                                            className="relative group rounded-xl overflow-hidden"
+                                            whileHover={{ scale: 1.02 }}
                                         >
-                                            <option value="" disabled>
-                                                Ningun grupo seleccionado
-                                            </option>
-
-                                            <option
-                                                className="bg-none"
-                                                value="Telas"
-                                            >
-                                                Telas
-                                            </option>
-                                            <option value="Lanas">Lanas</option>
-                                        </select>
+                                            <input
+                                                type="file"
+                                                onChange={onImageChange}
+                                                className="absolute inset-0 opacity-0 cursor-pointer z-10"
+                                            />
+                                            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                                <FontAwesomeAnimated
+                                                    icon={faPenToSquare}
+                                                    size="2xl"
+                                                    className="text-white"
+                                                />
+                                            </div>
+                                            {productos.image_url ? (
+                                                <img
+                                                    src={productos.image_url}
+                                                    className="max-h-[280px] rounded-xl"
+                                                />
+                                            ) : (
+                                                <div className="w-[200px] h-[280px] bg-gray-700/50 rounded-xl flex items-center justify-center">
+                                                    <FontAwesomeIcon
+                                                        icon={faImage}
+                                                        className="text-gray-500 text-4xl"
+                                                    />
+                                                </div>
+                                            )}
+                                        </motion.div>
                                     </div>
 
-                                    <div className="flex flex-row gap-2 items-center justify-between">
-                                        <h2 className="opacity-50">
-                                            Unidad de stock:
-                                        </h2>
-                                        <input
-                                            className="bg-transparent p-2 rounded-md"
-                                            type="text"
-                                            name="ustock"
-                                            id="ustock"
-                                            value={productos.ustock}
-                                            placeholder={product.ustock}
-                                            onChange={(e) =>
-                                                setProductos({
-                                                    ...productos,
-                                                    ustock: e.target.value,
-                                                })
-                                            }
-                                        />
-                                    </div>
+                                    <div className="space-y-4">
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div className="space-y-2">
+                                                <label className="text-sm text-gray-400">
+                                                    Nombre
+                                                </label>
+                                                <input
+                                                    className="w-full bg-gray-700/50 border-0 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500"
+                                                    type="text"
+                                                    value={productos.name}
+                                                    onChange={(e) =>
+                                                        setProductos({
+                                                            ...productos,
+                                                            name: e.target
+                                                                .value,
+                                                        })
+                                                    }
+                                                />
+                                            </div>
 
-                                    <div className="flex flex-row gap-2 items-center justify-between">
-                                        <h2 className="opacity-50">Precio:</h2>
-                                        <input
-                                            className="bg-transparent p-2 rounded-md"
-                                            type="number"
-                                            name="name"
-                                            id="name"
-                                            value={productos.price}
-                                            placeholder={product.price}
-                                            onChange={(e) =>
-                                                setProductos({
-                                                    ...productos,
-                                                    price: e.target.value,
-                                                })
-                                            }
-                                        />
-                                    </div>
+                                            <div className="space-y-2">
+                                                <label className="text-sm text-gray-400">
+                                                    Categoría
+                                                </label>
+                                                <select
+                                                    value={productos.type}
+                                                    onChange={(ev) =>
+                                                        setProductos({
+                                                            ...productos,
+                                                            type: ev.target
+                                                                .value,
+                                                        })
+                                                    }
+                                                    className="w-full bg-gray-700/50 border-0 rounded-lg px-4 py-2.5 text-white focus:ring-2 focus:ring-blue-500"
+                                                >
+                                                    <option
+                                                        value=""
+                                                        className="text-gray-900"
+                                                    >
+                                                        Categorías
+                                                    </option>
+                                                    {categories.map(
+                                                        (category) => (
+                                                            <option
+                                                                key={
+                                                                    category.id
+                                                                }
+                                                                value={
+                                                                    category.category_name
+                                                                }
+                                                                className="text-gray-900"
+                                                            >
+                                                                {
+                                                                    category.category_name
+                                                                }
+                                                            </option>
+                                                        )
+                                                    )}
+                                                </select>
+                                            </div>
+                                        </div>
 
-                                    <div className="flex flex-row gap-2 items-center justify-between">
-                                        <h2 className="opacity-50">Stock:</h2>
-                                        <input
-                                            className="bg-transparent p-2 rounded-md"
-                                            type="number"
-                                            name="name"
-                                            id="name"
-                                            value={productos.stock}
-                                            placeholder={product.stock}
-                                            onChange={(e) =>
-                                                setProductos({
-                                                    ...productos,
-                                                    stock: e.target.value,
-                                                })
-                                            }
-                                        />
+                                        <div className="space-y-2">
+                                            <label className="text-sm text-gray-400">
+                                                Descripción
+                                            </label>
+                                            <textarea
+                                                className="w-full bg-gray-700/50 border-0 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 min-h-[100px]"
+                                                value={productos.description}
+                                                onChange={(e) =>
+                                                    setProductos({
+                                                        ...productos,
+                                                        description:
+                                                            e.target.value,
+                                                    })
+                                                }
+                                            />
+                                        </div>
+
+                                        <div className="grid grid-cols-3 gap-4">
+                                            <div className="space-y-2">
+                                                <label className="text-sm text-gray-400">
+                                                    Unidad
+                                                </label>
+                                                <input
+                                                    className="w-full bg-gray-700/50 border-0 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500"
+                                                    type="text"
+                                                    value={productos.ustock}
+                                                    onChange={(e) =>
+                                                        setProductos({
+                                                            ...productos,
+                                                            ustock: e.target
+                                                                .value,
+                                                        })
+                                                    }
+                                                />
+                                            </div>
+
+                                            <div className="space-y-2">
+                                                <label className="text-sm text-gray-400">
+                                                    Stock
+                                                </label>
+                                                <input
+                                                    className="w-full bg-gray-700/50 border-0 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500"
+                                                    type="number"
+                                                    value={productos.stock}
+                                                    onChange={(e) =>
+                                                        setProductos({
+                                                            ...productos,
+                                                            stock: e.target
+                                                                .value,
+                                                        })
+                                                    }
+                                                />
+                                            </div>
+
+                                            <div className="space-y-2">
+                                                <label className="text-sm text-gray-400">
+                                                    Precio
+                                                </label>
+                                                <input
+                                                    className="w-full bg-gray-700/50 border-0 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500"
+                                                    type="number"
+                                                    value={productos.price}
+                                                    onChange={(e) =>
+                                                        setProductos({
+                                                            ...productos,
+                                                            price: e.target
+                                                                .value,
+                                                        })
+                                                    }
+                                                />
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div className="flex flex-row justify-evenly items-center py-3">
-                                <motion.button
-                                    onClick={onDeleteClick}
-                                    whileHover={{ backgroundColor: "#EF4444" }}
-                                    className="border border-red-500 px-10 py-2 rounded-md"
-                                >
-                                    Eliminar
-                                </motion.button>
-                                <motion.button
-                                    onClick={update}
-                                    whileHover={{ backgroundColor: "#3b82f6" }}
-                                    className="border border-blue-500 px-10 py-2 rounded-md"
-                                >
-                                    Actualizar
-                                </motion.button>
-                            </div>
+
+                                <div className="flex justify-end gap-4 p-6 border-t border-gray-700">
+                                    <motion.button
+                                        onClick={onDeleteClick}
+                                        whileHover={{
+                                            scale: 1.02,
+                                            backgroundColor: "rgb(239 68 68)",
+                                        }}
+                                        whileTap={{ scale: 0.98 }}
+                                        className="px-6 py-2.5 rounded-lg border border-red-500 text-red-500 hover:text-white transition-colors"
+                                    >
+                                        Eliminar
+                                    </motion.button>
+                                    <motion.button
+                                        onClick={update}
+                                        whileHover={{
+                                            scale: 1.02,
+                                            backgroundColor: "rgb(59 130 246)",
+                                        }}
+                                        whileTap={{ scale: 0.98 }}
+                                        className="px-6 py-2.5 rounded-lg border border-blue-500 text-blue-500 hover:text-white transition-colors"
+                                    >
+                                        Actualizar
+                                    </motion.button>
+                                </div>
+                            </motion.div>
                         </motion.div>
                     )}
                 </AnimatePresence>
