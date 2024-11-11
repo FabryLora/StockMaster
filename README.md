@@ -50,8 +50,15 @@ This project is an application developed with **Laravel** for the backend and **
 
 - Add product
 <img src="https://github.com/FabryLora/StockMaster/blob/master/frontend/src/assets/productos/addproduct.gif?raw=true" />
+
 - User tab
 <img src="https://github.com/FabryLora/StockMaster/blob/master/frontend/src/assets/productos/user.gif?raw=true"/>
+
+### Edit User
+<img src="https://github.com/FabryLora/StockMaster/blob/master/frontend/src/assets/edituser.png?raw=true"/>
+
+### Contact Us
+<img src="https://github.com/FabryLora/StockMaster/blob/master/frontend/src/assets/contact.png?raw=true"/>
 
 ### Sales
 <img src="https://raw.githubusercontent.com/FabryLora/StockMaster/refs/heads/master/frontend/src/assets/ventas/sales.webp" />
