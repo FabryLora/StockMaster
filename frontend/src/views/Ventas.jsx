@@ -22,6 +22,7 @@ export default function Ventas() {
         price: "",
         ustock: "",
         stock: "",
+        type: "",
     });
     const [price, setPrice] = useState(0);
     const [finalPrice, setFinalPrice] = useState();
@@ -33,9 +34,16 @@ export default function Ventas() {
         final_price: "",
         discount: "",
     });
-    const [error, setError] = useState(false);
     const [succ, setSucc] = useState(false);
     const [instantImage, setInstantImage] = useState("");
+    const [errors, setErrors] = useState({
+        product_name: null,
+        amount_sold: null,
+        final_price: null,
+        discount: null,
+        general: null,
+    });
+    const [amountStock, setAmountStock] = useState();
 
     useEffect(() => {
         setSales({
@@ -47,15 +55,32 @@ export default function Ventas() {
     }, [descuento, cant, finalPrice]);
 
     useEffect(() => {
-        setLoading(true);
-        axiosClient.get("/product").then(({ data }) => {
-            setProducts(data.data);
-            setFilteredProducts(data.data);
-            setLoading(false);
-        });
-    }, []);
+        const getProducts = () => {
+            setLoading(true);
+            axiosClient.get("/product").then(({ data }) => {
+                setProducts(data.data);
+                setFilteredProducts(data.data);
 
-    useEffect(() => {
+                if (infoProduct.id) {
+                    const currentProduct = data.data.find(
+                        (p) => p.id === infoProduct.id
+                    );
+                    if (currentProduct) {
+                        setInfoProduct((prev) => ({
+                            ...prev,
+                            stock: currentProduct.stock,
+                        }));
+                        setAmountStock(currentProduct.stock);
+                    }
+                }
+                setLoading(false);
+            });
+        };
+
+        getProducts();
+    }, [showSales]);
+
+    const fetchSales = () => {
         axiosClient.get("/sale").then(({ data }) => {
             setShowSales(
                 data.data.filter(
@@ -64,7 +89,11 @@ export default function Ventas() {
                 )
             );
         });
-    }, [showSales]);
+    };
+
+    useEffect(() => {
+        fetchSales();
+    }, []);
 
     useEffect(() => {
         let totalPrice = price * cant;
@@ -98,30 +127,42 @@ export default function Ventas() {
 
         const payload = { ...sales };
 
-        axiosClient
-            .post("sale", payload)
-            .then((res) => {
-                if (res.status === 201) {
-                    setSucc(true);
-                    setError(false);
-                }
-            })
-            .catch((err) => {
-                if (err && err.response) {
-                    const errorMessages = err.response.data.errors;
-                    const messagesArray = [];
+        if (infoProduct.stock >= cant) {
+            axiosClient
+                .post("sale", payload)
+                .then((res) => {
+                    if (res.status === 201) {
+                        setSucc(true);
+                        setErrors({});
+                        fetchSales();
+                    }
+                })
+                .catch((err) => {
+                    if (err && err.response) {
+                        const errorMessages = err.response.data.errors;
+                        const newErrors = {};
 
-                    Object.values(errorMessages).forEach(
-                        (messagesArrayField) => {
-                            messagesArrayField.forEach((message) => {
-                                messagesArray.push(message);
-                            });
-                        }
-                    );
-                    setSucc(false);
-                    setError(messagesArray);
-                }
+                        Object.entries(errorMessages).forEach(
+                            ([field, messages]) => {
+                                newErrors[field] = messages[0];
+                            }
+                        );
+
+                        setSucc(false);
+                        setErrors(newErrors);
+                    }
+                });
+
+            axiosClient.put(`product/${infoProduct.id}`, {
+                name: infoProduct.name,
+                stock: infoProduct.stock - cant,
+                price: infoProduct.price,
+                ustock: infoProduct.ustock,
+                type: infoProduct.type,
             });
+        } else {
+            setErrors({ amount_sold: "No hay suficiente stock" });
+        }
     };
 
     const handleSearch = (event) => {
@@ -185,7 +226,9 @@ export default function Ventas() {
                                                     price: product.price,
                                                     ustock: product.ustock,
                                                     stock: product.stock,
+                                                    type: product.type,
                                                 });
+                                                setAmountStock(product.stock);
                                                 setIsOpen(false);
                                                 setPrice(product.price);
                                                 setFinalPrice(product.price);
@@ -222,11 +265,9 @@ export default function Ventas() {
                         )}
                     </div>
 
-                    {error && (
+                    {errors.general && (
                         <div className="bg-red-500 text-white py-2 px-3 rounded-md">
-                            {error.map((error, index) => (
-                                <p key={index}>{error}</p>
-                            ))}
+                            {errors.general}
                         </div>
                     )}
 
@@ -239,7 +280,7 @@ export default function Ventas() {
                             <h3>ID: {infoProduct.id}</h3>
                             <h3>Producto: {infoProduct.name}</h3>
                             <h3>
-                                Cantidad disponible: {infoProduct.stock}{" "}
+                                Cantidad disponible: {amountStock}{" "}
                                 {infoProduct.ustock}
                             </h3>
                             <h3>
@@ -329,12 +370,19 @@ export default function Ventas() {
 
                         <input
                             onChange={(ev) => setCant(ev.target.value)}
-                            className="bg-transparent border p-2 rounded-md border-specialblue text-center"
+                            className={`bg-transparent border p-2 rounded-md border-specialblue text-center ${
+                                errors.amount_sold ? "border-red-500" : ""
+                            }`}
                             type="number"
                             name=""
                             placeholder="Cantidad..."
                             id=""
                         />
+                        {errors.amount_sold && (
+                            <span className="text-red-500 text-sm">
+                                {errors.amount_sold}
+                            </span>
+                        )}
                     </fieldset>
 
                     <fieldset className="flex flex-col items-center w-full gap-2 rounded-md border border-specialblue p-4 text-center">
@@ -365,7 +413,12 @@ export default function Ventas() {
             <div className="flex flex-col w-full justify-between h-full bg-gray-900/30 backdrop-blur-sm">
                 <div className="flex flex-col p-6 gap-4 overflow-y-auto h-full">
                     {showSales.map((infoSales) => (
-                        <SaleComponent key={infoSales.id} sale={infoSales} />
+                        <SaleComponent
+                            key={infoSales.id}
+                            sale={infoSales}
+                            product={infoProduct}
+                            onDelete={fetchSales}
+                        />
                     ))}
                 </div>
 

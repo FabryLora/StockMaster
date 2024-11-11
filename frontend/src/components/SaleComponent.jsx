@@ -2,10 +2,22 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axiosClient from "../axios";
 
-export default function SaleComponent({ sale }) {
+export default function SaleComponent({ sale, product, onDelete }) {
     const onDeleteClick = () => {
         if (window.confirm("Estas seguro que queres eliminar la venta?")) {
-            axiosClient.delete(`/sale/${sale.id}`);
+            axiosClient.delete(`/sale/${sale.id}`).then(() => {
+                axiosClient
+                    .put(`product/${product.id}`, {
+                        stock: product.stock + sale.amount_sold,
+                        name: product.name,
+                        price: product.price,
+                        ustock: product.ustock,
+                        type: product.type,
+                    })
+                    .then(() => {
+                        if (onDelete) onDelete();
+                    });
+            });
         }
     };
 
