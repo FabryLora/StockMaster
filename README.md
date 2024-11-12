@@ -11,6 +11,7 @@
   <img alt="TailwindCSS" width="50px" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg" />
   <img alt="Laravel" width="50px" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/laravel/laravel-original.svg" />
   <img alt="PHP" width="50px" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg" />
+  <img alt="mysql" width="50px" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg" />
 </p>
 
   
@@ -50,8 +51,15 @@ This project is an application developed with **Laravel** for the backend and **
 
 - Add product
 <img src="https://github.com/FabryLora/StockMaster/blob/master/frontend/src/assets/productos/addproduct.gif?raw=true" />
+
 - User tab
 <img src="https://github.com/FabryLora/StockMaster/blob/master/frontend/src/assets/productos/user.gif?raw=true"/>
+
+### Edit User
+<img src="https://github.com/FabryLora/StockMaster/blob/master/frontend/src/assets/edituser.png?raw=true"/>
+
+### Contact Us
+<img src="https://github.com/FabryLora/StockMaster/blob/master/frontend/src/assets/contact.png?raw=true"/>
 
 ### Sales
 <img src="https://raw.githubusercontent.com/FabryLora/StockMaster/refs/heads/master/frontend/src/assets/ventas/sales.webp" />
