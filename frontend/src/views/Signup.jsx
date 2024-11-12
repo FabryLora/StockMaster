@@ -31,7 +31,38 @@ export default function Signup() {
                 if (error.response) {
                     const finalErrors = Object.values(
                         error.response.data.errors
-                    ).reduce((accum, next) => [...next, ...accum], []);
+                    )
+                        .reduce((accum, next) => [...next, ...accum], [])
+                        .map((err) => {
+                            // Traducción de errores comunes
+                            const translations = {
+                                "The email field is required":
+                                    "El campo de correo electrónico es obligatorio",
+                                "The email must be a valid email address":
+                                    "El correo electrónico debe ser válido",
+                                "The password field is required":
+                                    "La contraseña es obligatoria",
+                                "The password must be at least 8 characters":
+                                    "La contraseña debe tener al menos 8 caracteres",
+                                "The password confirmation does not match":
+                                    "Las contraseñas no coinciden",
+                                "The email has already been taken":
+                                    "Este correo electrónico ya está registrado",
+                                "The name field is required":
+                                    "El nombre de usuario es obligatorio",
+                                "The password field confirmation does not match.":
+                                    "Las contraseñas no coinciden",
+                                "The password field must contain at least one uppercase and one lowercase letter.":
+                                    "La contraseña debe contener al menos una letra mayúscula y una minúscula",
+                                "The password field must contain at least one symbol.":
+                                    "La contraseña debe contener al menos un símbolo",
+                                "The password field must contain at least one number.":
+                                    "La contraseña debe contener al menos un número",
+                                "The password field must contain at least 8 characters.":
+                                    "La contraseña debe tener al menos 8 caracteres",
+                            };
+                            return translations[err] || err; // Si no hay traducción, mantiene el error original
+                        });
                     console.log(finalErrors);
                     setError({ __html: finalErrors.join("<br>") });
                 }

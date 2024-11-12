@@ -80,6 +80,9 @@ export default function ProductItem({ product }) {
             .then((res) => {
                 if (res.status === 200) {
                     setSucc(true);
+                    setIsOpen(false);
+                    setBlackScreen(false);
+                    setError(false);
                 }
             })
             .catch((err) => {
