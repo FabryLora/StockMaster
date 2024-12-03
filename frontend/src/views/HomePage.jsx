@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import gestor from "../assets/gestordeventas.webp";
 import inventoryLogo from "../assets/inventory-logo.png";
 import logo from "../assets/logo-no-background.png";
+import tinyLogo from "../assets/logotiny.png";
 import product from "../assets/productos.webp";
 import sales from "../assets/sales.webp";
 
@@ -18,10 +19,19 @@ export default function HomePage() {
         <>
             <header className="text-white bg-white sticky top-0 z-50">
                 <nav className="flex flex-row justify-evenly items-center p-2 relative shadow-md">
-                    <Link to={"/home"} className="w-full flex justify-center">
+                    <Link
+                        to={"/home"}
+                        className="w-full flex justify-center max-md:hidden"
+                    >
                         <img src={logo} width={300} alt="" />
                     </Link>
-                    <ul className="flex flex-row gap-5 absolute right-10 text-specialblue">
+                    <Link
+                        to={"/home"}
+                        className="w-full flex justify-center md:hidden"
+                    >
+                        <img src={tinyLogo} width={50} alt="" />
+                    </Link>
+                    <ul className="flex flex-row gap-5 absolute right-10 text-specialblue max-md:w-full max-md:justify-between max-md:right-0 max-md:px-5">
                         <MotionLink
                             whileTap={{ scale: 0.9 }}
                             to={"/login"}
@@ -84,22 +94,22 @@ export default function HomePage() {
                         </h2>
                     </div>
                     <div className="flex flex-col gap-8">
-                        <div className="flex flex-row gap-6">
+                        <div className="flex flex-row gap-6 max-md:gap-1">
                             <motion.div
                                 initial={{ scale: 1 }}
                                 whileHover={{ scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}
                                 onClick={() => setImageIndex(0)}
-                                className={`w-1/3 rounded-xl flex flex-col p-6 cursor-pointer backdrop-blur-sm transition-all duration-300 ${
+                                className={`w-1/3 rounded-xl flex flex-col p-6 cursor-pointer backdrop-blur-sm transition-all duration-300 max-md:backdrop-blur-0 max-md:items-center ${
                                     imageIndex == 0
                                         ? "bg-white/10 shadow-2xl border-blue-400 border-2"
                                         : "hover:bg-white/5"
                                 }`}
                             >
-                                <h2 className="font-bold text-2xl mb-3">
+                                <h2 className="font-bold text-2xl mb-3 max-md:text-xl">
                                     Productos
                                 </h2>
-                                <p className="text-gray-100 leading-relaxed">
+                                <p className="text-gray-100 leading-relaxed max-md:hidden">
                                     Organiza tus productos de forma fácil y
                                     segura. Con esta funcionalidad, podrás
                                     guardar todos tus productos para tenerlos
@@ -114,16 +124,16 @@ export default function HomePage() {
                                 whileHover={{ scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}
                                 onClick={() => setImageIndex(1)}
-                                className={`w-1/3 rounded-xl flex flex-col p-6 cursor-pointer backdrop-blur-sm transition-all duration-300 ${
+                                className={`w-1/3 rounded-xl flex flex-col p-6 cursor-pointer backdrop-blur-sm transition-all duration-300 max-md:backdrop-blur-0 max-md:items-center ${
                                     imageIndex == 1
                                         ? "bg-white/10 shadow-2xl border-pink-400 border-2"
                                         : "hover:bg-white/5"
                                 }`}
                             >
-                                <h2 className="font-bold text-2xl mb-3">
+                                <h2 className="font-bold text-2xl mb-3 max-md:text-xl">
                                     Ventas
                                 </h2>
-                                <p className="text-gray-100 leading-relaxed">
+                                <p className="text-gray-100 leading-relaxed max-md:hidden">
                                     Simplifica el proceso de ventas registrando
                                     todas tus transacciones diarias. Escoge los
                                     productos guardados y añade las ventas de
@@ -137,16 +147,16 @@ export default function HomePage() {
                                 whileHover={{ scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}
                                 onClick={() => setImageIndex(2)}
-                                className={`w-1/3 rounded-xl flex flex-col p-6 cursor-pointer backdrop-blur-sm transition-all duration-300 ${
+                                className={`w-1/3 rounded-xl flex flex-col p-6 cursor-pointer backdrop-blur-sm transition-all duration-300 max-md:backdrop-blur-0 max-md:items-center ${
                                     imageIndex == 2
                                         ? "bg-white/10 shadow-2xl border-purple-400 border-2"
                                         : "hover:bg-white/5"
                                 }`}
                             >
-                                <h2 className="font-bold text-2xl mb-3">
+                                <h2 className="font-bold text-2xl mb-3 max-md:text-xl">
                                     Gestion
                                 </h2>
-                                <p className="text-gray-100 leading-relaxed">
+                                <p className="text-gray-100 leading-relaxed max-md:hidden">
                                     Visualiza tus ganancias de forma clara y
                                     sencilla. Esta herramienta te permite ver
                                     cuánto has ganado en el día, mes o año,
@@ -156,7 +166,7 @@ export default function HomePage() {
                                 </p>
                             </motion.div>
                         </div>
-                        <div className="rounded-xl overflow-hidden shadow-2xl w-full">
+                        <div className="rounded-xl overflow-hidden shadow-2xl w-full max-md:h-[260px]">
                             <motion.img
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}

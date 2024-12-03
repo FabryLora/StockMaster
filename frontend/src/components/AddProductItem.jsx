@@ -169,7 +169,7 @@ export default function AddProductItem() {
                         initial={{ scale: 0, x: "-50%", y: "-50%" }}
                         animate={{ scale: 1 }}
                         exit={{ scale: 0 }}
-                        className="p-6 w-[35rem] h-[95%] max-h-screen sm:max-w-[90%] md:max-w-[80%] lg:max-w-[60%] rounded-2xl absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col gap-6 bg-gray-800 z-20 overflow-y-auto"
+                        className="p-6 w-[35rem] h-[95%] max-h-screen sm:max-w-[90%] md:max-w-[80%] lg:max-w-[60%] rounded-2xl absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col gap-6 bg-gray-800 z-20 overflow-y-auto max-md:w-full"
                     >
                         <button
                             onClick={() => {

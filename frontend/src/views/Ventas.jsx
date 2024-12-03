@@ -177,21 +177,21 @@ export default function Ventas() {
     };
 
     return (
-        <div className="flex flex-row text-white h-full bg-gray-900">
+        <div className="flex flex-row text-white h-full bg-gray-900 max-md:flex max-md:flex-col max-md:overflow-auto no-scrollbar">
             <AnimatePresence>
                 {succ && (
                     <motion.div
                         initial={{ opacity: 0, y: -50 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -50 }}
-                        className="fixed right-1/2 transform translate-x-1/2 top-5 bg-green-500 text-white py-3 px-6 rounded-lg shadow-lg z-50"
+                        className="fixed right-1/2 transform translate-x-1/2 top-5 bg-green-500 text-white py-3 px-6 rounded-lg shadow-lg z-50 max-md:right-20"
                     >
                         Venta realizada exitosamente
                     </motion.div>
                 )}
             </AnimatePresence>
 
-            <div className="h-full border-r border-specialblue/30 w-[28rem] relative overflow-y-scroll backdrop-blur-sm bg-gray-900/50">
+            <div className="h-full border-r border-specialblue/30 w-[28rem] relative overflow-y-scroll backdrop-blur-sm bg-gray-900/50 max-md:order-1 max-md:w-full max-md:overflow-y-visible">
                 <form
                     className="flex flex-col justify-center items-center p-6 gap-8"
                     onSubmit={onSubmit}
@@ -410,7 +410,7 @@ export default function Ventas() {
                 </form>
             </div>
 
-            <div className="flex flex-col w-full justify-between h-full bg-gray-900/30 backdrop-blur-sm">
+            <div className="flex flex-col w-full justify-between h-full bg-gray-900/30 backdrop-blur-sm max-md:order-2 max-md:mt-32">
                 <div className="flex flex-col p-6 gap-4 overflow-y-auto h-full">
                     {showSales.map((infoSales) => (
                         <SaleComponent

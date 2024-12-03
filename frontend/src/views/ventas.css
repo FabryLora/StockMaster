@@ -21,3 +21,13 @@ input[type="radio"]:checked + span {
     color: white;
     border: 2px solid #017cc5;
 }
+
+/* Oculta la scrollbar en navegadores modernos */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}

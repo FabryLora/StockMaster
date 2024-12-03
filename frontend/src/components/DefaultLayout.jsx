@@ -111,7 +111,7 @@ export default function DefaultLayout() {
                             </>
                         )}
                     </AnimatePresence>
-                    <Link className="pl-2">
+                    <Link className="flex justify-center">
                         <img
                             className="w-[200px] max-md:hidden"
                             src={logo}
@@ -135,7 +135,7 @@ export default function DefaultLayout() {
                             </MotionLink>
                         ))}
                     </ul>
-                    <div className="pr-5">
+                    <div>
                         <motion.button
                             whileTap={{ scale: 0.9 }}
                             onClick={() => setIsOpen(!isOpen)}
